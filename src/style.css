@@ -449,3 +449,66 @@ body {
 .board-error[hidden] {
   display: none;
 }
+
+.board--celebrate {
+  animation: board-glow 900ms ease-out;
+}
+
+@keyframes board-glow {
+  0% {
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.4),
+      0 8px 24px rgba(0, 0, 0, 0.35),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+  }
+  30% {
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.4),
+      0 8px 24px rgba(0, 0, 0, 0.35),
+      inset 0 0 0 2px rgba(126, 217, 164, 0.6),
+      0 0 40px rgba(126, 217, 164, 0.35);
+  }
+  100% {
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.4),
+      0 8px 24px rgba(0, 0, 0, 0.35),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+  }
+}
+
+.chalk-dust {
+  position: absolute;
+  top: 45%;
+  width: 6px;
+  height: 6px;
+  border-radius: 2px;
+  background: var(--accent);
+  pointer-events: none;
+  animation: dust-burst 900ms ease-out forwards;
+  animation-delay: var(--delay, 0ms);
+}
+
+.chalk-dust:nth-child(3n + 1) {
+  background: var(--accent-support);
+}
+
+.chalk-dust:nth-child(3n + 2) {
+  background: var(--success);
+}
+
+@keyframes dust-burst {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx, 0), 120px) rotate(var(--rot, 90deg));
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .board--celebrate {
+    animation: none;
+  }
+}
