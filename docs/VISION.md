@@ -7,7 +7,7 @@ an application rewrites to its body with arguments substituted in, then
 sub-expressions reduce inside-out until a value falls out. Lecturers draw
 this by hand on a chalkboard, one rewrite at a time. Every online Scheme
 environment — REPLs, playgrounds, notebook kernels — skips straight from
-input to final value. There is no tool where you paste your *own* recursive
+input to final value. There is no tool where you paste your _own_ recursive
 definition and watch the substitution unfold, step by step, the way it was
 taught.
 
@@ -17,7 +17,7 @@ Anyone learning (or re-learning, or teaching) recursion and the substitution
 model: SICP readers, CS1/CS2 students, TAs building lecture demos, and
 self-taught programmers who understand recursion by output but not by
 process. It's a teaching visualizer, not a production REPL — correctness and
-legibility of the *steps* matter more than performance or language coverage.
+legibility of the _steps_ matter more than performance or language coverage.
 
 ## The core idea
 

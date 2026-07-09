@@ -15,23 +15,23 @@ dusty, textured, and unapologetically about the board, not chrome around it.
 
 ## 2. Tokens
 
-| Token | Value | Use |
-|---|---|---|
-| `--bg` | `#161f1a` | page background (chalkboard base) |
-| `--surface-1` | `#1e2b23` | panel / card surface |
-| `--surface-2` | `#28382e` | raised surface (active step card, modals) |
-| `--text` | `#f3efe2` | primary chalk-white text |
-| `--text-muted` | `#aebbaf` | secondary / caption text (dusty sage) |
-| `--accent` | `#ffcf56` | chalk yellow — the "circle this term" color, primary CTA |
-| `--accent-support` | `#ff8a3d` | chalk orange — secondary emphasis, hover glow |
-| `--success` | `#7ed9a4` | mint chalk — final value reached |
-| `--danger` | `#ff6b6b` | chalk red — parse/eval errors |
-| Display font | **Fraunces** (Google Fonts), fallback `Georgia, serif` | wordmark, headings — warm, slightly quirky academic serif |
-| UI/code font | **JetBrains Mono** (Google Fonts), fallback `ui-monospace, monospace` | expression rendering, buttons, labels, body copy |
-| Spacing unit | 8px scale (8/16/24/32/48/64) | all layout spacing |
-| Corner radius | 10px standard, 6px for small controls | soft chalk-drawn rectangles, not sharp, not pill |
-| Shadow | layered soft shadow, `0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35)` + 2% opacity grain overlay | depth without looking like glass |
-| Motion | UI transitions 160ms ease-out; step-rewrite highlight pulse 90ms ease-out; respects `prefers-reduced-motion` | |
+| Token              | Value                                                                                                        | Use                                                       |
+| ------------------ | ------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------- |
+| `--bg`             | `#161f1a`                                                                                                    | page background (chalkboard base)                         |
+| `--surface-1`      | `#1e2b23`                                                                                                    | panel / card surface                                      |
+| `--surface-2`      | `#28382e`                                                                                                    | raised surface (active step card, modals)                 |
+| `--text`           | `#f3efe2`                                                                                                    | primary chalk-white text                                  |
+| `--text-muted`     | `#aebbaf`                                                                                                    | secondary / caption text (dusty sage)                     |
+| `--accent`         | `#ffcf56`                                                                                                    | chalk yellow — the "circle this term" color, primary CTA  |
+| `--accent-support` | `#ff8a3d`                                                                                                    | chalk orange — secondary emphasis, hover glow             |
+| `--success`        | `#7ed9a4`                                                                                                    | mint chalk — final value reached                          |
+| `--danger`         | `#ff6b6b`                                                                                                    | chalk red — parse/eval errors                             |
+| Display font       | **Fraunces** (Google Fonts), fallback `Georgia, serif`                                                       | wordmark, headings — warm, slightly quirky academic serif |
+| UI/code font       | **JetBrains Mono** (Google Fonts), fallback `ui-monospace, monospace`                                        | expression rendering, buttons, labels, body copy          |
+| Spacing unit       | 8px scale (8/16/24/32/48/64)                                                                                 | all layout spacing                                        |
+| Corner radius      | 10px standard, 6px for small controls                                                                        | soft chalk-drawn rectangles, not sharp, not pill          |
+| Shadow             | layered soft shadow, `0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35)` + 2% opacity grain overlay       | depth without looking like glass                          |
+| Motion             | UI transitions 160ms ease-out; step-rewrite highlight pulse 90ms ease-out; respects `prefers-reduced-motion` |                                                           |
 
 Type scale: 1.25 ratio from a 16px base (16 / 20 / 25 / 31 / 39 / 49px).
 

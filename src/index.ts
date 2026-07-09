@@ -16,7 +16,8 @@ const isMain =
   import.meta.url === `file://${process.argv[1]}`;
 
 if (isMain) {
-  const demo = "(define (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))";
+  const demo =
+    "(define (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))";
   console.log("Substitution Stepper — parser/printer smoke test");
   console.log(`in:  ${demo}`);
   console.log(`out: ${readAndPrint(demo)}`);

@@ -2,7 +2,10 @@ import { SchemeNode, bool, list, number, str, symbol } from "./ast";
 import { Token, tokenize } from "./lexer";
 
 export class ParseError extends Error {
-  constructor(message: string, public readonly position: number) {
+  constructor(
+    message: string,
+    public readonly position: number,
+  ) {
     super(message);
     this.name = "ParseError";
   }

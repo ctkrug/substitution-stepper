@@ -5,7 +5,7 @@ Paste a small Scheme expression, call a procedure, and watch it evaluate one
 on the whiteboard.
 
 This isn't a REPL. A REPL gives you the answer. Substitution Stepper gives you
-the *rewrite*: the expression literally redraws itself in place, one reduction
+the _rewrite_: the expression literally redraws itself in place, one reduction
 per click, so you can see the recursive process unfold the way Abelson chalks
 it up on the board.
 
@@ -16,7 +16,7 @@ model as the mental tool for reading recursive procedures: an application
 rewrites to its body with parameters substituted, sub-expressions reduce
 inside-out, and eventually you're left with a value. Lecturers draw this by
 hand. Every online Scheme REPL skips straight to the answer. Nothing lets you
-paste your own code and watch *your* recursion rewrite itself, step by step.
+paste your own code and watch _your_ recursion rewrite itself, step by step.
 
 ## What it does
 

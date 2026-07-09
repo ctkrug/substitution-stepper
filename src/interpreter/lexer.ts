@@ -1,11 +1,5 @@
 export type TokenType =
-  | "LPAREN"
-  | "RPAREN"
-  | "QUOTE"
-  | "SYMBOL"
-  | "NUMBER"
-  | "BOOLEAN"
-  | "STRING";
+  "LPAREN" | "RPAREN" | "QUOTE" | "SYMBOL" | "NUMBER" | "BOOLEAN" | "STRING";
 
 export interface Token {
   type: TokenType;
@@ -14,7 +8,10 @@ export interface Token {
 }
 
 export class LexError extends Error {
-  constructor(message: string, public readonly position: number) {
+  constructor(
+    message: string,
+    public readonly position: number,
+  ) {
     super(message);
     this.name = "LexError";
   }
