@@ -5,6 +5,18 @@
   "description": "Paste a Scheme expression and watch it evaluate one substitution-model step at a time.",
   "type": "module",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ctkrug/substitution-stepper.git"
+  },
+  "homepage": "https://github.com/ctkrug/substitution-stepper",
+  "keywords": [
+    "scheme",
+    "sicp",
+    "interpreter",
+    "substitution-model",
+    "typescript"
+  ],
   "engines": {
     "node": ">=18"
   },
