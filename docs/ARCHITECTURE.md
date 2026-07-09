@@ -28,7 +28,9 @@ src/
     app.ts              # SubstitutionApp: builds the page shell, binds events, re-renders on state change
   main.ts               # entry point: mounts SubstitutionApp into #app
   style.css             # design tokens (docs/DESIGN.md) + all component styles
-test/                   # one file per module above, plus app.test.ts (jsdom DOM smoke tests)
+test/                   # one file per module above, plus app.test.ts (jsdom DOM
+                        #   smoke tests) and properties.test.ts (fast-check
+                        #   property tests over the pure interpreter)
 ```
 
 ## Data flow
@@ -96,6 +98,7 @@ test/                   # one file per module above, plus app.test.ts (jsdom DOM
 npm install
 npm run dev         # local dev server
 npm test            # vitest run (all suites)
+npm run coverage    # vitest run --coverage (v8, scoped to src/)
 npm run typecheck   # tsc --noEmit
 npm run format      # prettier --write .
 npm run build       # tsc --noEmit && vite build -> dist/
