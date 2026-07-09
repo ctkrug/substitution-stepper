@@ -31,6 +31,11 @@ describe("tokenize", () => {
     expect(tokens).toHaveLength(5);
   });
 
+  it("ends an atom at a comment with no intervening space", () => {
+    const tokens = tokenize("(+ 1;inline\n 2)");
+    expect(tokens.map((t) => t.text)).toEqual(["(", "+", "1", "2", ")"]);
+  });
+
   it("recognizes booleans and strings", () => {
     const tokens = tokenize('(#t #f "hi")');
     expect(tokens.map((t) => t.type)).toEqual([
