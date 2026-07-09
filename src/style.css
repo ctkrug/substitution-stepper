@@ -73,3 +73,55 @@ button {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Layered background: a solid chalkboard base plus a faint radial vignette
+   and a subtle grain texture so the page reads as a board, not a flat panel. */
+body {
+  background:
+    radial-gradient(ellipse at top, rgba(255, 207, 86, 0.06), transparent 55%),
+    radial-gradient(ellipse at bottom, rgba(0, 0, 0, 0.35), transparent 65%),
+    var(--bg);
+}
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  gap: var(--space-3);
+}
+
+.wordmark {
+  font-size: 26px;
+  letter-spacing: 0.01em;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.wordmark__glyph {
+  color: var(--accent);
+  font-size: 1.3em;
+  text-shadow: 0 0 18px rgba(255, 207, 86, 0.45);
+}
+
+.layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
+  gap: var(--space-4);
+  padding: 0 var(--space-4) var(--space-4);
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
