@@ -201,6 +201,26 @@ describe("SubstitutionApp — state machine & rapid input", () => {
     expect(q(root, "#board").textContent).toBe("(factorial 5)");
   });
 
+  it("gives every control an accessible name and exposes the live/alert regions", () => {
+    const root = mount();
+    q<HTMLButtonElement>(root, "button.load-btn").click();
+    q<HTMLButtonElement>(root, 'button[aria-label="Step forward"]').click();
+
+    for (const btn of root.querySelectorAll("button")) {
+      const name = btn.getAttribute("aria-label") ?? btn.textContent ?? "";
+      expect(name.trim().length).toBeGreaterThan(0);
+    }
+
+    // The board announces each rewrite; the error banner is an assertive alert.
+    expect(q(root, "#board").getAttribute("aria-live")).toBe("polite");
+    expect(q(root, ".board-error").getAttribute("role")).toBe("alert");
+    // The source textarea is programmatically labelled.
+    const label = q<HTMLLabelElement>(root, 'label[for="source-input"]');
+    expect(label.textContent?.trim().length).toBeGreaterThan(0);
+    // The current history step is marked for assistive tech.
+    expect(root.querySelector('[aria-current="step"]')).not.toBeNull();
+  });
+
   it("a malformed re-load surfaces the error but leaves the prior board intact", () => {
     const root = mount();
     q<HTMLButtonElement>(root, "button.load-btn").click();
