@@ -9,5 +9,12 @@ export default defineConfig({
   },
   test: {
     environment: "node",
+    coverage: {
+      provider: "v8",
+      include: ["src/**"],
+      // main.ts is the DOM bootstrap (mounts the app); it has no logic to
+      // unit-test and is exercised by the jsdom smoke tests instead.
+      exclude: ["src/main.ts"],
+    },
   },
 });
