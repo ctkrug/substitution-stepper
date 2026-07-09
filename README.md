@@ -83,6 +83,7 @@ and [`docs/BACKLOG.md`](docs/BACKLOG.md) for what's done vs. left.
 npm install
 npm run dev         # local dev server
 npm test            # run the test suite
+npm run coverage    # test suite with a v8 coverage report
 npm run typecheck   # tsc --noEmit
 npm run build       # production build to dist/
 ```
