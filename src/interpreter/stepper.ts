@@ -121,7 +121,11 @@ function reduceCond(items: SchemeNode[], path: number[], env: Env): StepResult |
 function reduceApplication(items: SchemeNode[], path: number[], env: Env): StepResult | null {
   const [operator, ...operands] = items;
 
-  if (!isValue(operator)) {
+  // A symbol in operator position is resolved at apply time below (against
+  // both PRIMITIVES and env), not stepped on its own — otherwise a primitive
+  // name like "+" would look like an unbound variable reference.
+  const operatorReady = operator.kind === "symbol" || isValue(operator);
+  if (!operatorReady) {
     const reduced = stepExpr(operator, [...path, 0], env);
     if (!reduced) return null;
     return { expr: list([reduced.expr, ...operands]), path: reduced.path };
