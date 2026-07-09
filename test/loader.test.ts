@@ -50,4 +50,40 @@ describe("loadProgram", () => {
   it("propagates a parse error from malformed source", () => {
     expect(() => loadProgram("(+ 1 2")).toThrow(ParseError);
   });
+
+  describe("malformed defines", () => {
+    it("rejects a bare (define) with no target", () => {
+      expect(() => loadProgram("(define)")).toThrow(/malformed define/);
+    });
+
+    it("rejects a value define missing its value expression", () => {
+      expect(() => loadProgram("(define x) x")).toThrow(
+        /expects exactly one value/,
+      );
+    });
+
+    it("rejects a value define with more than one value expression", () => {
+      expect(() => loadProgram("(define x 1 2) x")).toThrow(
+        /expects exactly one value/,
+      );
+    });
+
+    it("rejects a procedure define whose body is more than one expression", () => {
+      expect(() => loadProgram("(define (f x) x x) (f 1)")).toThrow(
+        /body must be a single expression/,
+      );
+    });
+
+    it("rejects a procedure define whose name is not a symbol", () => {
+      expect(() => loadProgram("(define ((f) x) 1) (f 1)")).toThrow(
+        /procedure name must be a symbol/,
+      );
+    });
+
+    it("rejects a define whose target is neither a symbol nor a header", () => {
+      expect(() => loadProgram("(define 5 1) 5")).toThrow(
+        /target must be a symbol or a procedure header/,
+      );
+    });
+  });
 });
