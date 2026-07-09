@@ -111,6 +111,20 @@ body {
   text-shadow: 0 0 18px rgba(255, 207, 86, 0.45);
 }
 
+@media (max-width: 480px) {
+  .app-header {
+    padding: var(--space-2) var(--space-3);
+  }
+  .wordmark {
+    font-size: 18px;
+    white-space: nowrap;
+  }
+  .mute-btn {
+    white-space: nowrap;
+    padding: 8px 10px;
+  }
+}
+
 .layout {
   flex: 1;
   display: grid;
@@ -122,8 +136,16 @@ body {
 
 @media (max-width: 900px) {
   .layout {
-    grid-template-columns: 1fr;
+    /* A bare 1fr keeps the implicit auto min-width, so a long nowrap history
+       entry can still force this track (and the page) wider than the
+       viewport — minmax(0, 1fr) lets it shrink below its content's size. */
+    grid-template-columns: minmax(0, 1fr);
   }
+}
+
+.board-pane,
+.control-pane {
+  min-width: 0;
 }
 
 .board-pane {
