@@ -214,6 +214,8 @@ describe("SubstitutionApp — state machine & rapid input", () => {
     // The board announces each rewrite; the error banner is an assertive alert.
     expect(q(root, "#board").getAttribute("aria-live")).toBe("polite");
     expect(q(root, ".board-error").getAttribute("role")).toBe("alert");
+    // The step / final-value status is announced politely.
+    expect(q(root, ".board-status").getAttribute("aria-live")).toBe("polite");
     // The source textarea is programmatically labelled.
     const label = q<HTMLLabelElement>(root, 'label[for="source-input"]');
     expect(label.textContent?.trim().length).toBeGreaterThan(0);

@@ -100,6 +100,8 @@ export class SubstitutionApp {
     board.id = "board";
     board.setAttribute("aria-live", "polite");
     const boardStatus = el("div", "board-status");
+    boardStatus.setAttribute("role", "status");
+    boardStatus.setAttribute("aria-live", "polite");
     const boardError = el("div", "board-error");
     boardError.setAttribute("role", "alert");
     boardError.hidden = true;
