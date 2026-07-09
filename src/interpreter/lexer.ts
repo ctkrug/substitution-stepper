@@ -17,9 +17,10 @@ export class LexError extends Error {
   }
 }
 
-// Brackets alias to parens (SICP/Racket cond style), so they must also break an
-// atom — otherwise "1]" scans as a single symbol token instead of NUMBER + ).
-const DELIMITER = /[\s()[\]'"]/;
+// Brackets alias to parens (SICP/Racket cond style) and ";" starts a comment
+// anywhere, so all of them must break an atom — otherwise "1]" or "1;note"
+// scans as a single symbol token instead of ending the number.
+const DELIMITER = /[\s()[\]'";]/;
 
 function isDelimiter(ch: string): boolean {
   return DELIMITER.test(ch);
