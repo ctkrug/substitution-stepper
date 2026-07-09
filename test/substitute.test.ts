@@ -70,4 +70,11 @@ describe("substitute", () => {
   it("returns an unrelated empty list unchanged", () => {
     expect(substitute(list([]), new Map([["n", number(5)]]))).toEqual(list([]));
   });
+
+  it("substitutes into a nested lambda that binds no parameters", () => {
+    // The empty param list shadows nothing, so free names still flow inside.
+    expect(rewrite("(lambda () (+ x 1))", [["x", "9"]])).toBe(
+      "(lambda () (+ 9 1))",
+    );
+  });
 });

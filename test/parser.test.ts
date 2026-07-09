@@ -39,6 +39,14 @@ describe("parseOne", () => {
   it("rejects trailing input after a complete expression", () => {
     expect(() => parseOne("1 2")).toThrow(ParseError);
   });
+
+  it("rejects empty input as an unexpected end of input", () => {
+    expect(() => parseOne("")).toThrow(/unexpected end of input/);
+  });
+
+  it("rejects a dangling quote with nothing to quote", () => {
+    expect(() => parseOne("'")).toThrow(ParseError);
+  });
 });
 
 describe("parseProgram", () => {

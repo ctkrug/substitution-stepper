@@ -223,4 +223,20 @@ describe("step: malformed special forms surface a clear RuntimeError", () => {
       /parameter must be a symbol/,
     );
   });
+
+  it("rejects a cond whose reached test is a non-boolean value", () => {
+    expect(() => step(parseOne("(cond (5 1))"), env)).toThrow(
+      /test must be a boolean/,
+    );
+  });
+});
+
+describe("step: a bare symbol reduces by an environment lookup", () => {
+  it("rewrites a standalone variable to its bound value", () => {
+    const env = new Env();
+    env.define("answer", parseOne("42"));
+    const result = step(parseOne("answer"), env);
+    expect(print(result!.expr)).toBe("42");
+    expect(result!.path).toEqual([]);
+  });
 });
