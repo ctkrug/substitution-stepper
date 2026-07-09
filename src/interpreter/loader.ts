@@ -18,7 +18,9 @@ export interface LoadedProgram {
 export function loadProgram(source: string): LoadedProgram {
   const forms = parseProgram(source);
   if (forms.length === 0) {
-    throw new RuntimeError("nothing to load — paste a definition and a call expression");
+    throw new RuntimeError(
+      "nothing to load — paste a definition and a call expression",
+    );
   }
 
   const env = new Env();
@@ -39,13 +41,19 @@ export function loadProgram(source: string): LoadedProgram {
   });
 
   if (!initial) {
-    throw new RuntimeError("the program must end with a call expression to step through");
+    throw new RuntimeError(
+      "the program must end with a call expression to step through",
+    );
   }
   return { env, initial };
 }
 
 function isDefine(node: SchemeNode): boolean {
-  return node.kind === "list" && node.items[0]?.kind === "symbol" && node.items[0].name === "define";
+  return (
+    node.kind === "list" &&
+    node.items[0]?.kind === "symbol" &&
+    node.items[0].name === "define"
+  );
 }
 
 function applyDefine(node: SchemeNode, env: Env): void {
@@ -58,10 +66,14 @@ function applyDefine(node: SchemeNode, env: Env): void {
     // (define (name params...) body)
     const nameNode = target.items[0];
     if (!nameNode || nameNode.kind !== "symbol") {
-      throw new RuntimeError("malformed define: procedure name must be a symbol");
+      throw new RuntimeError(
+        "malformed define: procedure name must be a symbol",
+      );
     }
     if (node.items.length !== 3) {
-      throw new RuntimeError(`define ${nameNode.name}: procedure body must be a single expression`);
+      throw new RuntimeError(
+        `define ${nameNode.name}: procedure body must be a single expression`,
+      );
     }
     const params = list(target.items.slice(1));
     env.define(nameNode.name, list([symbol("lambda"), params, node.items[2]]));
@@ -70,11 +82,15 @@ function applyDefine(node: SchemeNode, env: Env): void {
 
   if (target.kind === "symbol") {
     if (node.items.length !== 3) {
-      throw new RuntimeError(`malformed define: ${target.name} expects exactly one value expression`);
+      throw new RuntimeError(
+        `malformed define: ${target.name} expects exactly one value expression`,
+      );
     }
     env.define(target.name, node.items[2]);
     return;
   }
 
-  throw new RuntimeError("malformed define: target must be a symbol or a procedure header");
+  throw new RuntimeError(
+    "malformed define: target must be a symbol or a procedure header",
+  );
 }

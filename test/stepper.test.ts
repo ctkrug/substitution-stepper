@@ -16,7 +16,9 @@ function runToCompletion(source: string, env: Env) {
     current = result.expr;
     history.push(current);
   }
-  throw new Error("runToCompletion: exceeded 10,000 steps — likely an infinite loop");
+  throw new Error(
+    "runToCompletion: exceeded 10,000 steps — likely an infinite loop",
+  );
 }
 
 describe("isValue", () => {
@@ -78,7 +80,9 @@ describe("step: cond", () => {
 
   it("throws when no clause matches and there is no else", () => {
     const env = new Env();
-    expect(() => step(parseOne("(cond (#f 1))"), env)).toThrow(/no clause matched/);
+    expect(() => step(parseOne("(cond (#f 1))"), env)).toThrow(
+      /no clause matched/,
+    );
   });
 });
 
@@ -170,7 +174,10 @@ describe("environment model exercised through the stepper", () => {
 
   it("shadowing a parameter name inside a nested lambda does not corrupt the outer substitution", () => {
     const env = new Env();
-    env.define("apply-twice", parseOne("(lambda (n) ((lambda (n) (+ n 1)) n))"));
+    env.define(
+      "apply-twice",
+      parseOne("(lambda (n) ((lambda (n) (+ n 1)) n))"),
+    );
     const result = step(parseOne("(apply-twice 10)"), env);
     expect(print(result!.expr)).toBe("((lambda (n) (+ n 1)) 10)");
   });

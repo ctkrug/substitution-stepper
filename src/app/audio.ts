@@ -45,13 +45,21 @@ export class Sfx {
 
   private ensureContext(): AudioContext | null {
     if (typeof window === "undefined") return null;
-    const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    const Ctor =
+      window.AudioContext ??
+      (window as unknown as { webkitAudioContext?: typeof AudioContext })
+        .webkitAudioContext;
     if (!Ctor) return null;
     if (!this.ctx) this.ctx = new Ctor();
     return this.ctx;
   }
 
-  private tone(freq: number, duration: number, type: OscillatorType, gainValue: number): void {
+  private tone(
+    freq: number,
+    duration: number,
+    type: OscillatorType,
+    gainValue: number,
+  ): void {
     if (this.muted) return;
     const ctx = this.ensureContext();
     if (!ctx) return;

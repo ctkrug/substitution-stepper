@@ -11,16 +11,24 @@ function rewrite(source: string, bindings: [string, string][]): string {
 
 describe("substitute", () => {
   it("replaces a bound symbol with its value", () => {
-    expect(substitute(symbol("n"), new Map([["n", number(5)]]))).toEqual(number(5));
+    expect(substitute(symbol("n"), new Map([["n", number(5)]]))).toEqual(
+      number(5),
+    );
   });
 
   it("leaves an unbound symbol untouched", () => {
-    expect(substitute(symbol("n"), new Map([["m", number(5)]]))).toEqual(symbol("n"));
+    expect(substitute(symbol("n"), new Map([["m", number(5)]]))).toEqual(
+      symbol("n"),
+    );
   });
 
   it("leaves atoms other than symbols untouched", () => {
-    expect(substitute(number(1), new Map([["n", number(5)]]))).toEqual(number(1));
-    expect(substitute(bool(true), new Map([["n", number(5)]]))).toEqual(bool(true));
+    expect(substitute(number(1), new Map([["n", number(5)]]))).toEqual(
+      number(1),
+    );
+    expect(substitute(bool(true), new Map([["n", number(5)]]))).toEqual(
+      bool(true),
+    );
   });
 
   it("substitutes throughout a nested application", () => {
@@ -30,7 +38,9 @@ describe("substitute", () => {
   });
 
   it("substitutes into every branch of an if", () => {
-    expect(rewrite("(if (= n 0) 1 (* n 2))", [["n", "0"]])).toBe("(if (= 0 0) 1 (* 0 2))");
+    expect(rewrite("(if (= n 0) 1 (* n 2))", [["n", "0"]])).toBe(
+      "(if (= 0 0) 1 (* 0 2))",
+    );
   });
 
   it("does not substitute inside a quoted form", () => {
@@ -38,11 +48,15 @@ describe("substitute", () => {
   });
 
   it("does not substitute into a nested lambda that shadows the same name", () => {
-    expect(rewrite("(lambda (n) (+ n 1))", [["n", "99"]])).toBe("(lambda (n) (+ n 1))");
+    expect(rewrite("(lambda (n) (+ n 1))", [["n", "99"]])).toBe(
+      "(lambda (n) (+ n 1))",
+    );
   });
 
   it("still substitutes free variables inside a nested lambda that does not shadow them", () => {
-    expect(rewrite("(lambda (x) (+ x n))", [["n", "99"]])).toBe("(lambda (x) (+ x 99))");
+    expect(rewrite("(lambda (x) (+ x n))", [["n", "99"]])).toBe(
+      "(lambda (x) (+ x 99))",
+    );
   });
 
   it("substitutes multiple distinct bindings independently", () => {

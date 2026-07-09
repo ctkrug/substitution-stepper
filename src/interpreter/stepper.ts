@@ -27,7 +27,10 @@ export function isValue(node: SchemeNode): boolean {
     case "list": {
       if (node.items.length === 0) return true;
       const head = node.items[0];
-      return head.kind === "symbol" && (head.name === "quote" || head.name === "lambda");
+      return (
+        head.kind === "symbol" &&
+        (head.name === "quote" || head.name === "lambda")
+      );
     }
   }
 }
@@ -42,7 +45,11 @@ export function step(expr: SchemeNode, env: Env): StepResult | null {
   return stepExpr(expr, [], env);
 }
 
-function stepExpr(node: SchemeNode, path: number[], env: Env): StepResult | null {
+function stepExpr(
+  node: SchemeNode,
+  path: number[],
+  env: Env,
+): StepResult | null {
   if (isValue(node)) return null;
 
   if (node.kind === "symbol") {
@@ -66,7 +73,11 @@ function stepExpr(node: SchemeNode, path: number[], env: Env): StepResult | null
   return reduceApplication(node.items, path, env);
 }
 
-function reduceIf(items: SchemeNode[], path: number[], env: Env): StepResult | null {
+function reduceIf(
+  items: SchemeNode[],
+  path: number[],
+  env: Env,
+): StepResult | null {
   if (items.length !== 4) {
     throw new RuntimeError("if: expected (if test consequent alternative)");
   }
@@ -87,7 +98,11 @@ function reduceIf(items: SchemeNode[], path: number[], env: Env): StepResult | n
   return { expr: test.value ? consequent : alternative, path };
 }
 
-function reduceCond(items: SchemeNode[], path: number[], env: Env): StepResult | null {
+function reduceCond(
+  items: SchemeNode[],
+  path: number[],
+  env: Env,
+): StepResult | null {
   const clauses = items.slice(1);
   for (let i = 0; i < clauses.length; i++) {
     const clause = clauses[i];
@@ -105,11 +120,16 @@ function reduceCond(items: SchemeNode[], path: number[], env: Env): StepResult |
       if (!reduced) return null;
       const newClauses = clauses.slice();
       newClauses[i] = list([reduced.expr, result]);
-      return { expr: list([symbol("cond"), ...newClauses]), path: reduced.path };
+      return {
+        expr: list([symbol("cond"), ...newClauses]),
+        path: reduced.path,
+      };
     }
 
     if (test.kind !== "boolean") {
-      throw new RuntimeError(`cond: test must be a boolean, got ${print(test)}`);
+      throw new RuntimeError(
+        `cond: test must be a boolean, got ${print(test)}`,
+      );
     }
     if (test.value) {
       return { expr: result, path };
@@ -118,7 +138,11 @@ function reduceCond(items: SchemeNode[], path: number[], env: Env): StepResult |
   throw new RuntimeError("cond: no clause matched and no else was given");
 }
 
-function reduceApplication(items: SchemeNode[], path: number[], env: Env): StepResult | null {
+function reduceApplication(
+  items: SchemeNode[],
+  path: number[],
+  env: Env,
+): StepResult | null {
   const [operator, ...operands] = items;
 
   // A symbol in operator position is resolved at apply time below (against
@@ -145,16 +169,24 @@ function reduceApplication(items: SchemeNode[], path: number[], env: Env): StepR
     return { expr: PRIMITIVES[operator.name](operands), path };
   }
 
-  const proc = operator.kind === "symbol" ? env.lookup(operator.name) : operator;
-  if (!(proc.kind === "list" && proc.items[0]?.kind === "symbol" && proc.items[0].name === "lambda")) {
+  const proc =
+    operator.kind === "symbol" ? env.lookup(operator.name) : operator;
+  if (!(
+    proc.kind === "list" &&
+    proc.items[0]?.kind === "symbol" &&
+    proc.items[0].name === "lambda"
+  )) {
     throw new RuntimeError(`cannot apply ${print(operator)}: not a procedure`);
   }
   if (proc.items.length !== 3 || proc.items[1].kind !== "list") {
-    throw new RuntimeError("malformed lambda: expected (lambda (params...) body)");
+    throw new RuntimeError(
+      "malformed lambda: expected (lambda (params...) body)",
+    );
   }
 
   const params = proc.items[1].items.map((p) => {
-    if (p.kind !== "symbol") throw new RuntimeError("malformed lambda: parameter must be a symbol");
+    if (p.kind !== "symbol")
+      throw new RuntimeError("malformed lambda: parameter must be a symbol");
     return p.name;
   });
   if (params.length !== operands.length) {

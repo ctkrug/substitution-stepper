@@ -18,11 +18,18 @@ function pathsEqual(a: number[], b: number[]): boolean {
  * what was just rewritten — the chalk-circle moment the whole project is
  * built around.
  */
-export function renderBoardHtml(node: SchemeNode, highlight: number[] | null): string {
+export function renderBoardHtml(
+  node: SchemeNode,
+  highlight: number[] | null,
+): string {
   return renderNode(node, [], highlight);
 }
 
-function renderNode(node: SchemeNode, path: number[], highlight: number[] | null): string {
+function renderNode(
+  node: SchemeNode,
+  path: number[],
+  highlight: number[] | null,
+): string {
   const inner = renderInner(node, path, highlight);
   if (highlight && pathsEqual(path, highlight)) {
     return `<mark class="board__rewrite">${inner}</mark>`;
@@ -30,7 +37,11 @@ function renderNode(node: SchemeNode, path: number[], highlight: number[] | null
   return inner;
 }
 
-function renderInner(node: SchemeNode, path: number[], highlight: number[] | null): string {
+function renderInner(
+  node: SchemeNode,
+  path: number[],
+  highlight: number[] | null,
+): string {
   switch (node.kind) {
     case "number":
       return `<span class="tok tok--number">${node.value}</span>`;
@@ -48,7 +59,9 @@ function renderInner(node: SchemeNode, path: number[], highlight: number[] | nul
       ) {
         return `<span class="tok tok--quote">'</span>${renderNode(node.items[1], [...path, 1], highlight)}`;
       }
-      const parts = node.items.map((item, i) => renderNode(item, [...path, i], highlight));
+      const parts = node.items.map((item, i) =>
+        renderNode(item, [...path, i], highlight),
+      );
       return `<span class="tok tok--paren">(</span>${parts.join(" ")}<span class="tok tok--paren">)</span>`;
     }
   }

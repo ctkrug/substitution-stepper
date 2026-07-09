@@ -251,7 +251,9 @@ body {
   background: var(--surface-1);
   border-radius: var(--radius);
   padding: var(--space-3);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.4),
+    0 8px 24px rgba(0, 0, 0, 0.35);
 }
 
 .panel-label {
@@ -277,7 +279,9 @@ body {
   font-family: var(--font-ui);
   font-size: 14px;
   line-height: 1.5;
-  transition: border-color 160ms ease-out, box-shadow 160ms ease-out;
+  transition:
+    border-color 160ms ease-out,
+    box-shadow 160ms ease-out;
 }
 
 .source-input:hover {
@@ -308,7 +312,11 @@ body {
   padding: 10px 16px;
   min-height: 44px;
   cursor: pointer;
-  transition: transform 120ms ease-out, background-color 160ms ease-out, border-color 160ms ease-out, box-shadow 160ms ease-out;
+  transition:
+    transform 120ms ease-out,
+    background-color 160ms ease-out,
+    border-color 160ms ease-out,
+    box-shadow 160ms ease-out;
 }
 
 .btn:hover:not(:disabled) {
@@ -385,7 +393,9 @@ body {
   padding: 8px 14px;
   min-height: 44px;
   cursor: pointer;
-  transition: color 160ms ease-out, border-color 160ms ease-out;
+  transition:
+    color 160ms ease-out,
+    border-color 160ms ease-out;
 }
 
 .icon-btn:hover {
@@ -435,7 +445,9 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: pointer;
-  transition: background-color 160ms ease-out, color 160ms ease-out;
+  transition:
+    background-color 160ms ease-out,
+    color 160ms ease-out;
   min-height: 32px;
 }
 

@@ -24,14 +24,28 @@ export interface AppState {
 }
 
 export function initialState(source = ""): AppState {
-  return { source, env: null, history: [], highlights: [], index: 0, error: null };
+  return {
+    source,
+    env: null,
+    history: [],
+    highlights: [],
+    index: 0,
+    error: null,
+  };
 }
 
 /** Parses `source`, replacing the board with the freshly loaded program. On failure, keeps `source` but reports the error and leaves any prior run in place. */
 export function load(state: AppState, source: string): AppState {
   try {
     const { env, initial } = loadProgram(source);
-    return { source, env, history: [initial], highlights: [null], index: 0, error: null };
+    return {
+      source,
+      env,
+      history: [initial],
+      highlights: [null],
+      index: 0,
+      error: null,
+    };
   } catch (err) {
     return { ...state, source, error: describeError(err) };
   }

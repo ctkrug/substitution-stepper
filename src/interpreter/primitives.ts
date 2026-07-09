@@ -16,7 +16,8 @@ function add(args: SchemeNode[]): SchemeNode {
 }
 
 function sub(args: SchemeNode[]): SchemeNode {
-  if (args.length === 0) throw new RuntimeError("-: requires at least 1 argument");
+  if (args.length === 0)
+    throw new RuntimeError("-: requires at least 1 argument");
   const nums = args.map((a) => asNumber(a, "-"));
   if (nums.length === 1) return number(-nums[0]);
   return number(nums.slice(1).reduce((acc, n) => acc - n, nums[0]));
@@ -27,7 +28,8 @@ function mul(args: SchemeNode[]): SchemeNode {
 }
 
 function div(args: SchemeNode[]): SchemeNode {
-  if (args.length === 0) throw new RuntimeError("/: requires at least 1 argument");
+  if (args.length === 0)
+    throw new RuntimeError("/: requires at least 1 argument");
   const nums = args.map((a) => asNumber(a, "/"));
   const [first, ...rest] = nums.length === 1 ? [1, nums[0]] : nums;
   return number(
@@ -38,10 +40,14 @@ function div(args: SchemeNode[]): SchemeNode {
   );
 }
 
-function chainCompare(name: string, cmp: (a: number, b: number) => boolean): Primitive {
+function chainCompare(
+  name: string,
+  cmp: (a: number, b: number) => boolean,
+): Primitive {
   return (args) => {
     const nums = args.map((a) => asNumber(a, name));
-    if (nums.length === 0) throw new RuntimeError(`${name}: requires at least 1 argument`);
+    if (nums.length === 0)
+      throw new RuntimeError(`${name}: requires at least 1 argument`);
     for (let i = 0; i < nums.length - 1; i++) {
       if (!cmp(nums[i], nums[i + 1])) return bool(false);
     }

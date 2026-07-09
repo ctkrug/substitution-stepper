@@ -18,10 +18,16 @@ import { renderBoardHtml } from "./board";
 const PLAY_INTERVAL_MS = 700;
 
 function prefersReducedMotion(): boolean {
-  return typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
+  return (
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true
+  );
 }
 
-function el<K extends keyof HTMLElementTagNameMap>(tag: K, className?: string): HTMLElementTagNameMap[K] {
+function el<K extends keyof HTMLElementTagNameMap>(
+  tag: K,
+  className?: string,
+): HTMLElementTagNameMap[K] {
   const node = document.createElement(tag);
   if (className) node.className = className;
   return node;
@@ -80,7 +86,8 @@ export class SubstitutionApp {
 
     const header = el("header", "app-header");
     const wordmark = el("h1", "wordmark");
-    wordmark.innerHTML = '<span class="wordmark__glyph">&lambda;</span>Substitution Stepper';
+    wordmark.innerHTML =
+      '<span class="wordmark__glyph">&lambda;</span>Substitution Stepper';
     const muteBtn = el("button", "icon-btn mute-btn");
     muteBtn.type = "button";
     header.append(wordmark, muteBtn);
@@ -172,7 +179,9 @@ export class SubstitutionApp {
       this.examplesRow.appendChild(chip);
     }
 
-    this.loadBtn.addEventListener("click", () => this.doLoad(this.sourceInput.value));
+    this.loadBtn.addEventListener("click", () =>
+      this.doLoad(this.sourceInput.value),
+    );
     this.stepBtn.addEventListener("click", () => this.doStep());
     this.backBtn.addEventListener("click", () => this.doBack());
     this.resetBtn.addEventListener("click", () => this.doReset());
@@ -272,8 +281,14 @@ export class SubstitutionApp {
     if (prefersReducedMotion()) return;
     for (let i = 0; i < 18; i++) {
       const dust = el("span", "chalk-dust");
-      dust.style.setProperty("--dx", `${Math.round((Math.random() - 0.5) * 240)}px`);
-      dust.style.setProperty("--rot", `${Math.round((Math.random() - 0.5) * 360)}deg`);
+      dust.style.setProperty(
+        "--dx",
+        `${Math.round((Math.random() - 0.5) * 240)}px`,
+      );
+      dust.style.setProperty(
+        "--rot",
+        `${Math.round((Math.random() - 0.5) * 360)}deg`,
+      );
       dust.style.setProperty("--delay", `${Math.round(Math.random() * 120)}ms`);
       dust.style.left = `${40 + Math.random() * 20}%`;
       this.board.appendChild(dust);
@@ -320,7 +335,10 @@ export class SubstitutionApp {
 
     this.muteBtn.textContent = this.sfx.isMuted() ? "Sound: off" : "Sound: on";
     this.muteBtn.setAttribute("aria-pressed", String(this.sfx.isMuted()));
-    this.muteBtn.setAttribute("aria-label", this.sfx.isMuted() ? "Unmute sound effects" : "Mute sound effects");
+    this.muteBtn.setAttribute(
+      "aria-label",
+      this.sfx.isMuted() ? "Unmute sound effects" : "Mute sound effects",
+    );
 
     this.renderHistory();
   }

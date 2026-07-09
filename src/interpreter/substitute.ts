@@ -40,7 +40,10 @@ export function substitute(
         const params = node.items[1];
         const shadowed = new Set(
           params.items
-            .filter((p): p is Extract<SchemeNode, { kind: "symbol" }> => p.kind === "symbol")
+            .filter(
+              (p): p is Extract<SchemeNode, { kind: "symbol" }> =>
+                p.kind === "symbol",
+            )
             .map((p) => p.name),
         );
         const inner =

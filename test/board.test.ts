@@ -12,7 +12,9 @@ describe("renderBoardHtml", () => {
 
   it("wraps the whole expression in <mark> when the highlight path is []", () => {
     const html = renderBoardHtml(parseOne("120"), []);
-    expect(html).toBe('<mark class="board__rewrite"><span class="tok tok--number">120</span></mark>');
+    expect(html).toBe(
+      '<mark class="board__rewrite"><span class="tok tok--number">120</span></mark>',
+    );
   });
 
   it("wraps only the sub-expression at the given path", () => {
@@ -22,10 +24,10 @@ describe("renderBoardHtml", () => {
     const markStart = html.indexOf("<mark");
     const markEnd = html.indexOf("</mark>") + "</mark>".length;
     const marked = html.slice(markStart, markEnd);
-    expect(marked).toContain("tok--symbol\">*");
+    expect(marked).toContain('tok--symbol">*');
     // ...but the outer "+" and the trailing "1" are not.
-    expect(html.slice(0, markStart)).toContain("tok--symbol\">+");
-    expect(html.slice(markEnd)).toContain("tok--number\">1");
+    expect(html.slice(0, markStart)).toContain('tok--symbol">+');
+    expect(html.slice(markEnd)).toContain('tok--number">1');
   });
 
   it("escapes HTML-sensitive characters in string literals", () => {

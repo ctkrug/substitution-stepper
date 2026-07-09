@@ -23,14 +23,18 @@ describe("SubstitutionApp", () => {
   it("shows a designed empty state before anything is loaded", () => {
     const root = mount();
     expect(q(root, "#board").textContent).toMatch(/Nothing on the board yet/);
-    expect(q<HTMLButtonElement>(root, 'button[aria-label="Step forward"]').disabled).toBe(true);
+    expect(
+      q<HTMLButtonElement>(root, 'button[aria-label="Step forward"]').disabled,
+    ).toBe(true);
   });
 
   it("loads the pre-filled factorial example on clicking Load", () => {
     const root = mount();
     q<HTMLButtonElement>(root, "button.load-btn").click();
     expect(q(root, "#board").textContent).toBe("(factorial 5)");
-    expect(q<HTMLButtonElement>(root, 'button[aria-label="Step forward"]').disabled).toBe(false);
+    expect(
+      q<HTMLButtonElement>(root, 'button[aria-label="Step forward"]').disabled,
+    ).toBe(false);
   });
 
   it("steps forward, growing history and updating the board", () => {
@@ -38,23 +42,33 @@ describe("SubstitutionApp", () => {
     q<HTMLButtonElement>(root, "button.load-btn").click();
     q<HTMLButtonElement>(root, 'button[aria-label="Step forward"]').click();
     expect(root.querySelectorAll(".history-item")).toHaveLength(2);
-    expect(q(root, "#board").textContent).toBe("(if (= 5 0) 1 (* 5 (factorial (- 5 1))))");
+    expect(q(root, "#board").textContent).toBe(
+      "(if (= 5 0) 1 (* 5 (factorial (- 5 1))))",
+    );
   });
 
   it("disables Step once the board reaches its final value", () => {
     const root = mount();
     q<HTMLButtonElement>(root, "button.load-btn").click();
-    const stepBtn = q<HTMLButtonElement>(root, 'button[aria-label="Step forward"]');
+    const stepBtn = q<HTMLButtonElement>(
+      root,
+      'button[aria-label="Step forward"]',
+    );
     for (let i = 0; i < 40 && !stepBtn.disabled; i++) stepBtn.click();
     expect(q(root, "#board").textContent).toBe("120");
     expect(stepBtn.disabled).toBe(true);
-    expect(q(root, ".board-status").textContent).toMatch(/Reached the final value/);
+    expect(q(root, ".board-status").textContent).toMatch(
+      /Reached the final value/,
+    );
   });
 
   it("stepping again after reaching the value is inert, not an error", () => {
     const root = mount();
     q<HTMLButtonElement>(root, "button.load-btn").click();
-    const stepBtn = q<HTMLButtonElement>(root, 'button[aria-label="Step forward"]');
+    const stepBtn = q<HTMLButtonElement>(
+      root,
+      'button[aria-label="Step forward"]',
+    );
     for (let i = 0; i < 40 && !stepBtn.disabled; i++) stepBtn.click();
     stepBtn.click(); // disabled, but exercise the click handler's own guard too
     expect(q(root, "#board").textContent).toBe("120");
@@ -83,9 +97,9 @@ describe("SubstitutionApp", () => {
     q<HTMLButtonElement>(root, "button.load-btn").click();
     q<HTMLButtonElement>(root, 'button[aria-label="Step forward"]').click();
     q<HTMLButtonElement>(root, 'button[aria-label="Step forward"]').click();
-    const resetBtn = Array.from(root.querySelectorAll<HTMLButtonElement>(".controls-block .btn")).find(
-      (b) => b.textContent === "Reset",
-    )!;
+    const resetBtn = Array.from(
+      root.querySelectorAll<HTMLButtonElement>(".controls-block .btn"),
+    ).find((b) => b.textContent === "Reset")!;
     resetBtn.click();
     expect(q(root, "#board").textContent).toBe("(factorial 5)");
     expect(root.querySelectorAll(".history-item")).toHaveLength(1);
@@ -96,16 +110,19 @@ describe("SubstitutionApp", () => {
     q<HTMLButtonElement>(root, "button.load-btn").click();
     q<HTMLButtonElement>(root, 'button[aria-label="Step forward"]').click();
     q<HTMLButtonElement>(root, 'button[aria-label="Step forward"]').click();
-    const firstEntry = q<HTMLLIElement>(root, '.history-item[data-index="0"] button');
+    const firstEntry = q<HTMLLIElement>(
+      root,
+      '.history-item[data-index="0"] button',
+    );
     firstEntry.click();
     expect(q(root, "#board").textContent).toBe("(factorial 5)");
   });
 
   it("clicking an example chip loads that example immediately", () => {
     const root = mount();
-    const fibChip = Array.from(root.querySelectorAll<HTMLButtonElement>(".btn--chip")).find(
-      (b) => b.textContent === "Fibonacci",
-    )!;
+    const fibChip = Array.from(
+      root.querySelectorAll<HTMLButtonElement>(".btn--chip"),
+    ).find((b) => b.textContent === "Fibonacci")!;
     fibChip.click();
     expect(q(root, "#board").textContent).toBe("(fib 6)");
   });

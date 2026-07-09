@@ -50,12 +50,15 @@ describe("stepForward", () => {
     const stepped = stepForward(loaded);
     expect(stepped.history).toHaveLength(2);
     expect(stepped.index).toBe(1);
-    expect(print(current(stepped)!)).toBe("(if (= 3 0) 1 (* 3 (factorial (- 3 1))))");
+    expect(print(current(stepped)!)).toBe(
+      "(if (= 3 0) 1 (* 3 (factorial (- 3 1))))",
+    );
   });
 
   it("is a no-op once the board has reduced to a final value", () => {
     let state = load(initialState(), FACTORIAL);
-    for (let i = 0; i < 100 && !isAtValue(state); i++) state = stepForward(state);
+    for (let i = 0; i < 100 && !isAtValue(state); i++)
+      state = stepForward(state);
     expect(isAtValue(state)).toBe(true);
     const finalValue = print(current(state)!);
     const steppedAgain = stepForward(state);
