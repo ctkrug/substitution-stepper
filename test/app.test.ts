@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SubstitutionApp } from "../src/ui/app";
 
 function mount(): HTMLElement {
@@ -133,5 +133,85 @@ describe("SubstitutionApp", () => {
     const wasMuted = muteBtn.getAttribute("aria-pressed");
     muteBtn.click();
     expect(muteBtn.getAttribute("aria-pressed")).not.toBe(wasMuted);
+  });
+});
+
+describe("SubstitutionApp — state machine & rapid input", () => {
+  beforeEach(() => {
+    document.body.innerHTML = "";
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("auto-plays to the final value then stops the interval on its own", () => {
+    vi.useFakeTimers();
+    const root = mount();
+    q<HTMLButtonElement>(root, "button.load-btn").click();
+    const playBtn = Array.from(
+      root.querySelectorAll<HTMLButtonElement>(".controls-block .btn"),
+    ).find((b) => b.textContent === "Play")!;
+
+    playBtn.click();
+    expect(playBtn.textContent).toBe("Pause");
+    // Advance well past the number of steps factorial needs.
+    vi.advanceTimersByTime(700 * 40);
+
+    expect(q(root, "#board").textContent).toBe("120");
+    expect(playBtn.textContent).toBe("Play"); // interval cleared itself
+    expect(q(root, ".board-error").hasAttribute("hidden")).toBe(true);
+    // No leaked interval keeps firing after completion.
+    vi.advanceTimersByTime(700 * 5);
+    expect(q(root, "#board").textContent).toBe("120");
+  });
+
+  it("clicking Play then Play again pauses without advancing", () => {
+    vi.useFakeTimers();
+    const root = mount();
+    q<HTMLButtonElement>(root, "button.load-btn").click();
+    const playBtn = Array.from(
+      root.querySelectorAll<HTMLButtonElement>(".controls-block .btn"),
+    ).find((b) => b.textContent === "Play")!;
+    playBtn.click();
+    playBtn.click(); // pause immediately
+    expect(playBtn.textContent).toBe("Play");
+    vi.advanceTimersByTime(700 * 10);
+    expect(q(root, "#board").textContent).toBe("(factorial 5)");
+  });
+
+  it("drives stepping from the keyboard and ignores keys typed in the editor", () => {
+    const root = mount();
+    q<HTMLButtonElement>(root, "button.load-btn").click();
+
+    document.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }),
+    );
+    expect(root.querySelectorAll(".history-item")).toHaveLength(2);
+
+    document.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "ArrowLeft", bubbles: true }),
+    );
+    expect(q(root, "#board").textContent).toBe("(factorial 5)");
+
+    // A key whose target is the textarea must not move the board.
+    const textarea = q<HTMLTextAreaElement>(root, "#source-input");
+    textarea.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }),
+    );
+    expect(q(root, "#board").textContent).toBe("(factorial 5)");
+  });
+
+  it("a malformed re-load surfaces the error but leaves the prior board intact", () => {
+    const root = mount();
+    q<HTMLButtonElement>(root, "button.load-btn").click();
+    q<HTMLButtonElement>(root, 'button[aria-label="Step forward"]').click();
+    const boardBefore = q(root, "#board").textContent;
+
+    const textarea = q<HTMLTextAreaElement>(root, "#source-input");
+    textarea.value = "(((";
+    q<HTMLButtonElement>(root, "button.load-btn").click();
+
+    expect(q(root, ".board-error").hasAttribute("hidden")).toBe(false);
+    expect(q(root, "#board").textContent).toBe(boardBefore);
   });
 });
