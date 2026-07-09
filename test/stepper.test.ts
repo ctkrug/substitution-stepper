@@ -181,4 +181,46 @@ describe("environment model exercised through the stepper", () => {
     const result = step(parseOne("(apply-twice 10)"), env);
     expect(print(result!.expr)).toBe("((lambda (n) (+ n 1)) 10)");
   });
+
+  it("returns a closure that captures the substituted free variable (higher-order)", () => {
+    const { env, initial } = loadProgram(`
+      (define (make-adder x) (lambda (y) (+ x y)))
+      ((make-adder 3) 4)
+    `);
+    const history = runToCompletion(print(initial), env);
+    // (make-adder 3) must chalk-in 3 for x, producing (lambda (y) (+ 3 y)),
+    // which then applies to 4 — the whole point of the substitution model.
+    expect(history.some((n) => print(n) === "((lambda (y) (+ 3 y)) 4)")).toBe(
+      true,
+    );
+    expect(print(history[history.length - 1])).toBe("7");
+  });
+});
+
+describe("step: malformed special forms surface a clear RuntimeError", () => {
+  const env = new Env();
+
+  it("rejects an if without all three of test/consequent/alternative", () => {
+    expect(() => step(parseOne("(if #t 1)"), env)).toThrow(
+      /expected \(if test consequent alternative\)/,
+    );
+  });
+
+  it("rejects a cond clause that is not (test result)", () => {
+    expect(() => step(parseOne("(cond (#t))"), env)).toThrow(
+      /each clause must be \(test result\)/,
+    );
+  });
+
+  it("rejects applying a lambda whose body is more than one expression", () => {
+    expect(() => step(parseOne("((lambda (x) x x) 1)"), env)).toThrow(
+      /malformed lambda/,
+    );
+  });
+
+  it("rejects applying a lambda with a non-symbol parameter", () => {
+    expect(() => step(parseOne("((lambda (5) 1) 2)"), env)).toThrow(
+      /parameter must be a symbol/,
+    );
+  });
 });
