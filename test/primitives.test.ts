@@ -56,6 +56,14 @@ describe("/", () => {
       /division by zero/,
     );
   });
+  it("throws on a zero-argument reciprocal divisor", () => {
+    expect(() => PRIMITIVES["/"]([number(1), number(2), number(0)])).toThrow(
+      /division by zero/,
+    );
+  });
+  it("rejects zero arguments", () => {
+    expect(() => PRIMITIVES["/"]([])).toThrow(/at least 1 argument/);
+  });
 });
 
 describe("comparisons", () => {
