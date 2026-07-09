@@ -54,4 +54,26 @@ describe("Sfx", () => {
     const sfx = new Sfx();
     expect(() => sfx.setMuted(true)).not.toThrow();
   });
+
+  it("treats a corrupt persisted value as unmuted, not a crash", () => {
+    withFakeLocalStorage(() => {
+      localStorage.setItem("substitution-stepper:muted", "yes-please");
+      expect(new Sfx().isMuted()).toBe(false);
+    });
+  });
+
+  it("survives a localStorage that throws on read", () => {
+    const throwing = {
+      getItem: () => {
+        throw new Error("SecurityError: storage blocked");
+      },
+      setItem: () => {
+        throw new Error("SecurityError: storage blocked");
+      },
+    };
+    (globalThis as unknown as { localStorage: unknown }).localStorage =
+      throwing;
+    expect(() => new Sfx().isMuted()).not.toThrow();
+    expect(new Sfx().isMuted()).toBe(false);
+  });
 });
