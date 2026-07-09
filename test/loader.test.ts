@@ -51,6 +51,16 @@ describe("loadProgram", () => {
     expect(() => loadProgram("(+ 1 2")).toThrow(ParseError);
   });
 
+  it("accepts square-bracket syntax interchangeably with parens", () => {
+    const { env, initial } = loadProgram(
+      "(define (sign x) (cond [(< x 0) -1] [else 1])) (sign -3)",
+    );
+    expect(print(initial)).toBe("(sign -3)");
+    expect(print(env.lookup("sign"))).toBe(
+      "(lambda (x) (cond ((< x 0) -1) (else 1)))",
+    );
+  });
+
   describe("malformed defines", () => {
     it("rejects a bare (define) with no target", () => {
       expect(() => loadProgram("(define)")).toThrow(/malformed define/);

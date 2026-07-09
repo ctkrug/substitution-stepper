@@ -51,4 +51,30 @@ describe("tokenize", () => {
   it("throws on an unterminated string", () => {
     expect(() => tokenize('"unterminated')).toThrow(LexError);
   });
+
+  it("treats square brackets as parentheses (SICP/Racket cond style)", () => {
+    const tokens = tokenize("[cond [else 1]]");
+    expect(tokens.map((t) => `${t.type}:${t.text}`)).toEqual([
+      "LPAREN:(",
+      "SYMBOL:cond",
+      "LPAREN:(",
+      "SYMBOL:else",
+      "NUMBER:1",
+      "RPAREN:)",
+      "RPAREN:)",
+    ]);
+  });
+
+  it("lexes decimal number forms", () => {
+    for (const text of ["3.14", ".5", "1.", "-0.25"]) {
+      const [tok] = tokenize(text);
+      expect(tok.type).toBe("NUMBER");
+      expect(tok.text).toBe(text);
+    }
+  });
+
+  it("treats a lone + or - as a symbol, not a number", () => {
+    expect(tokenize("+")[0].type).toBe("SYMBOL");
+    expect(tokenize("-")[0].type).toBe("SYMBOL");
+  });
 });
