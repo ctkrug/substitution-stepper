@@ -1,34 +1,34 @@
 # Architecture
 
 A concise map of the codebase for anyone (including a future session)
-picking this up cold. See `docs/VISION.md` for *why*, `docs/DESIGN.md`
+picking this up cold. See `docs/VISION.md` for _why_, `docs/DESIGN.md`
 for the visual direction, and `docs/BACKLOG.md` for what's built vs. left.
 
 ## Layout
 
 ```
 src/
-  interpreter/        # the Scheme core — no DOM knowledge, fully unit-tested
-    ast.ts             # SchemeNode union (symbol/number/boolean/string/list) + constructors
-    lexer.ts           # source text -> Token[]
-    parser.ts          # Token[] -> SchemeNode (parseOne, parseProgram)
-    printer.ts         # SchemeNode -> source text (round-trips the parser)
-    environment.ts     # Env: parent-chained frames (define/lookup/has/extend)
+  interpreter/          # the Scheme core — no DOM knowledge, fully unit-tested
+    ast.ts              # SchemeNode union (symbol/number/boolean/string/list) + constructors
+    lexer.ts            # source text -> Token[]
+    parser.ts           # Token[] -> SchemeNode (parseOne, parseProgram)
+    printer.ts          # SchemeNode -> source text (round-trips the parser)
+    environment.ts      # Env: parent-chained frames (define/lookup/has/extend)
     substitute.ts       # substitute(node, bindings): the textual parameter rewrite
     primitives.ts       # + - * / = < > <= >= as SchemeNode -> SchemeNode functions
     stepper.ts          # step(expr, env): one substitution-model reduction
     loader.ts           # loadProgram(source): folds defines into an Env, returns the initial call
     errors.ts           # RuntimeError (evaluation-time; distinct from Lex/ParseError)
-  app/                 # framework-agnostic state layer — no DOM knowledge, fully unit-tested
+  app/                  # framework-agnostic state layer — no DOM knowledge, fully unit-tested
     state.ts            # AppState + load/stepForward/stepBack/jumpTo/reset (pure functions)
-    examples.ts          # the four SICP-classic example sources
-    audio.ts             # Sfx: WebAudio-synthesized step/error/win SFX + persisted mute
-  ui/                  # DOM layer — renders app/ state, wires events
-    board.ts             # renderBoardHtml(node, highlightPath): SchemeNode -> highlighted HTML
-    app.ts               # SubstitutionApp: builds the page shell, binds events, re-renders on state change
-  main.ts              # entry point: mounts SubstitutionApp into #app
-  style.css            # design tokens (docs/DESIGN.md) + all component styles
-test/                  # one file per module above, plus app.test.ts (jsdom DOM smoke tests)
+    examples.ts         # the four SICP-classic example sources
+    audio.ts            # Sfx: WebAudio-synthesized step/error/win SFX + persisted mute
+  ui/                   # DOM layer — renders app/ state, wires events
+    board.ts            # renderBoardHtml(node, highlightPath): SchemeNode -> highlighted HTML
+    app.ts              # SubstitutionApp: builds the page shell, binds events, re-renders on state change
+  main.ts               # entry point: mounts SubstitutionApp into #app
+  style.css             # design tokens (docs/DESIGN.md) + all component styles
+test/                   # one file per module above, plus app.test.ts (jsdom DOM smoke tests)
 ```
 
 ## Data flow
@@ -50,8 +50,10 @@ test/                  # one file per module above, plus app.test.ts (jsdom DOM 
    - Anything else recurses into the first not-yet-reduced sub-expression.
    - Returns `null` once `expr` is a value (atom, quoted data, or a bare
      `lambda`) — nothing left to step.
+
    Each call also returns the **path** (list indices) to the sub-expression it
    rewrote, so the UI can highlight exactly that node.
+
 4. **State.** `app/state.ts` wraps `step`/`loadProgram` in a plain-data reducer:
    `AppState` holds `history` (every expression seen) and `index` (where the
    board is currently looking), so stepping back and re-stepping forward reuse
@@ -67,7 +69,7 @@ test/                  # one file per module above, plus app.test.ts (jsdom DOM 
 ## Design notes / non-obvious decisions
 
 - **Why textual substitution instead of a runtime environment for closures:**
-  the whole point of the project is to *show* the SICP substitution model
+  the whole point of the project is to _show_ the SICP substitution model
   happening, so `substitute()` literally rewrites parameter names to argument
   values in the AST — that rewritten tree is what's printed to the board.
   `Env` still exists and is real (parent-chained frames, tested independently
@@ -82,7 +84,7 @@ test/                  # one file per module above, plus app.test.ts (jsdom DOM 
   second.
 - **Why highlight paths are cached per history entry** (`AppState.highlights`,
   parallel to `history`) rather than a single "last highlight" field:
-  stepping back and then forward again needs to replay the *same* rewrite
+  stepping back and then forward again needs to replay the _same_ rewrite
   highlight, not lose it.
 - **Static, subpath-safe build:** `vite.config.ts` sets `base: "./"`; every
   asset reference in `index.html`/`style.css` is relative. Verified by
