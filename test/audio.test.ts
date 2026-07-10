@@ -1,5 +1,49 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { Sfx } from "../src/app/audio";
+
+class FakeAudioParam {
+  value = 0;
+  exponentialRampToValueAtTime = vi.fn();
+}
+
+class FakeOscillatorNode {
+  type = "";
+  frequency = new FakeAudioParam();
+  connect = vi.fn(() => ({ connect: vi.fn() }));
+  start = vi.fn();
+  stop = vi.fn();
+}
+
+class FakeGainNode {
+  gain = new FakeAudioParam();
+  connect = vi.fn();
+}
+
+class FakeAudioContext {
+  currentTime = 0;
+  destination = {};
+  oscillators: FakeOscillatorNode[] = [];
+  createOscillator = vi.fn(() => {
+    const osc = new FakeOscillatorNode();
+    this.oscillators.push(osc);
+    return osc;
+  });
+  createGain = vi.fn(() => new FakeGainNode());
+}
+
+function withFakeAudioContext<T>(run: (ctx: FakeAudioContext) => T): T {
+  const ctx = new FakeAudioContext();
+  (globalThis as unknown as { window: unknown }).window = {
+    AudioContext: function (this: unknown) {
+      return ctx;
+    },
+  };
+  try {
+    return run(ctx);
+  } finally {
+    delete (globalThis as unknown as { window?: unknown }).window;
+  }
+}
 
 function withFakeLocalStorage<T>(run: () => T): T {
   const store = new Map<string, string>();
@@ -75,5 +119,35 @@ describe("Sfx", () => {
       throwing;
     expect(() => new Sfx().isMuted()).not.toThrow();
     expect(new Sfx().isMuted()).toBe(false);
+  });
+
+  it("plays a real oscillator tone through a WebAudio context", () => {
+    withFakeAudioContext((ctx) => {
+      new Sfx().step();
+      expect(ctx.createOscillator).toHaveBeenCalledTimes(1);
+      const osc = ctx.oscillators[0];
+      expect(osc.type).toBe("square");
+      expect(osc.frequency.value).toBeGreaterThan(0);
+      expect(osc.start).toHaveBeenCalledTimes(1);
+      expect(osc.stop).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it("reuses the same AudioContext across multiple sounds", () => {
+    withFakeAudioContext((ctx) => {
+      const sfx = new Sfx();
+      sfx.step();
+      sfx.error();
+      expect(ctx.createOscillator).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  it("does not play a tone while muted", () => {
+    withFakeAudioContext((ctx) => {
+      const sfx = new Sfx();
+      sfx.setMuted(true);
+      sfx.step();
+      expect(ctx.createOscillator).not.toHaveBeenCalled();
+    });
   });
 });
