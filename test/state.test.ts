@@ -42,6 +42,13 @@ describe("load", () => {
     const fixed = load(broken, FACTORIAL);
     expect(fixed.error).toBeNull();
   });
+
+  it("translates a stack overflow from pathological nesting into a friendly message", () => {
+    const src = "(".repeat(50000) + "1" + ")".repeat(50000);
+    const state = load(initialState(), src);
+    expect(state.error).not.toMatch(/call stack/i);
+    expect(state.error).toMatch(/too deep/i);
+  });
 });
 
 describe("stepForward", () => {
