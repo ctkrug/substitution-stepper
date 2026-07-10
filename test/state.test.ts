@@ -114,6 +114,15 @@ describe("stepBack", () => {
     const loaded = load(initialState(), FACTORIAL);
     expect(stepBack(loaded)).toEqual(loaded);
   });
+
+  it("clears a stale error when rewinding away from the failing step", () => {
+    const loaded = load(initialState(), "(+ (+ 1 1) (undefined-var))");
+    const onceGood = stepForward(loaded);
+    const failed = stepForward(onceGood);
+    expect(failed.error).toMatch(/unbound variable: undefined-var/);
+    const back = stepBack(failed);
+    expect(back.error).toBeNull();
+  });
 });
 
 describe("jumpTo", () => {
@@ -129,6 +138,15 @@ describe("jumpTo", () => {
     const state = load(initialState(), FACTORIAL);
     expect(jumpTo(state, 99)).toEqual(state);
     expect(jumpTo(state, -1)).toEqual(state);
+  });
+
+  it("clears a stale error when jumping away from the failing step", () => {
+    const loaded = load(initialState(), "(+ (+ 1 1) (undefined-var))");
+    const onceGood = stepForward(loaded);
+    const failed = stepForward(onceGood);
+    expect(failed.error).not.toBeNull();
+    const jumped = jumpTo(failed, 0);
+    expect(jumped.error).toBeNull();
   });
 });
 
