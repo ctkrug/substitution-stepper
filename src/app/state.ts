@@ -77,13 +77,13 @@ export function stepForward(state: AppState): AppState {
 /** Rewinds to the previous history entry. A no-op at the start of history. */
 export function stepBack(state: AppState): AppState {
   if (state.index === 0) return state;
-  return { ...state, index: state.index - 1 };
+  return { ...state, index: state.index - 1, error: null };
 }
 
 /** Jumps directly to a history entry, e.g. from clicking the scrubber. */
 export function jumpTo(state: AppState, index: number): AppState {
   if (index < 0 || index >= state.history.length) return state;
-  return { ...state, index };
+  return { ...state, index, error: null };
 }
 
 /** Returns to the originally loaded expression and discards subsequent history. */
