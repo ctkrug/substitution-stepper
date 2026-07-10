@@ -37,6 +37,20 @@ describe("SubstitutionApp", () => {
     ).toBe(false);
   });
 
+  it("renders tokens inside a non-flex wrapper so inter-token spaces survive layout", () => {
+    // #board is a flex container (for centering); a flex container drops
+    // whitespace-only text nodes between its direct children, which would
+    // glue every token together with no visible gap. The token spans must
+    // live one level deeper, inside .board-content, not as direct children
+    // of the flex container itself.
+    const root = mount();
+    q<HTMLButtonElement>(root, "button.load-btn").click();
+    const board = q(root, "#board");
+    const content = q(root, "#board .board-content");
+    expect(Array.from(board.children)).toEqual([content]);
+    expect(content.querySelectorAll(".tok").length).toBeGreaterThan(0);
+  });
+
   it("steps forward, growing history and updating the board", () => {
     const root = mount();
     q<HTMLButtonElement>(root, "button.load-btn").click();
