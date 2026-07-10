@@ -230,9 +230,7 @@ function reduceApplication(
       throw new RuntimeError("malformed lambda: parameter must be a symbol");
     return p.name;
   });
-  const firstDuplicate = params.find(
-    (name, i) => params.indexOf(name) !== i,
-  );
+  const firstDuplicate = params.find((name, i) => params.indexOf(name) !== i);
   if (firstDuplicate) {
     throw new RuntimeError(
       `malformed lambda: duplicate parameter name '${firstDuplicate}'`,

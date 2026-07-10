@@ -106,7 +106,7 @@ test/                   # one file per module above, plus app.test.ts (jsdom DOM
   with no way to recover short of closing the tab. The cap sits far above
   any built-in example's peak (ackermann(3,3) tops out under 250 nodes) but
   well below where per-step cost turns pathological, so it fails fast with a
-  clear message instead of hanging. The `isValue()` check runs *before* the
+  clear message instead of hanging. The `isValue()` check runs _before_ the
   cap, so a large-but-already-reduced expression (e.g. a big quoted literal)
   still returns `null` like any other value instead of tripping it — the cap
   only ever fires on an expression `step()` is about to actually reduce.

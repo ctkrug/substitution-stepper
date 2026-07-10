@@ -352,7 +352,9 @@ describe("step: unbounded recursion is caught before it grows without limit", ()
       }
     }
     expect(error).toBeInstanceOf(RuntimeError);
-    expect((error as RuntimeError).message).toMatch(/too large|unbounded recursion/);
+    expect((error as RuntimeError).message).toMatch(
+      /too large|unbounded recursion/,
+    );
   });
 
   it("also catches a realistic user mistake: a negative input that just never hits n = 0", () => {
@@ -374,7 +376,9 @@ describe("step: unbounded recursion is caught before it grows without limit", ()
       }
     }
     expect(error).toBeInstanceOf(RuntimeError);
-    expect((error as RuntimeError).message).toMatch(/too large|unbounded recursion/);
+    expect((error as RuntimeError).message).toMatch(
+      /too large|unbounded recursion/,
+    );
   });
 
   it("does not interfere with a legitimately larger example (ackermann(3,3))", () => {

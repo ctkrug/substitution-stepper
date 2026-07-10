@@ -179,10 +179,7 @@ describe("SubstitutionApp", () => {
 
     // Jump back to the initial (non-value) entry via the history list, not
     // "Step back" — this is the path that used to leave `wasAtValue` stale.
-    q<HTMLButtonElement>(
-      root,
-      '.history-item[data-index="0"] button',
-    ).click();
+    q<HTMLButtonElement>(root, '.history-item[data-index="0"] button').click();
     stepBtn.click();
 
     expect(q(root, "#board").textContent).toBe("5");
@@ -192,7 +189,10 @@ describe("SubstitutionApp", () => {
   it("skips chalk-dust particles but still marks the win state when prefers-reduced-motion is set", () => {
     const originalMatchMedia = window.matchMedia;
     (window as unknown as { matchMedia: typeof window.matchMedia }).matchMedia =
-      ((query: string) => ({ matches: true, media: query })) as unknown as typeof window.matchMedia;
+      ((query: string) => ({
+        matches: true,
+        media: query,
+      })) as unknown as typeof window.matchMedia;
     try {
       const root = mount();
       const sourceInput = q<HTMLTextAreaElement>(root, "#source-input");
@@ -206,8 +206,9 @@ describe("SubstitutionApp", () => {
       );
       expect(root.querySelectorAll(".chalk-dust")).toHaveLength(0);
     } finally {
-      (window as unknown as { matchMedia: typeof window.matchMedia }).matchMedia =
-        originalMatchMedia;
+      (
+        window as unknown as { matchMedia: typeof window.matchMedia }
+      ).matchMedia = originalMatchMedia;
     }
   });
 
