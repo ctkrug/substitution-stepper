@@ -4,7 +4,6 @@ import {
   current,
   highlightPath,
   initialState,
-  isAtFrontier,
   isAtValue,
   jumpTo,
   load,
@@ -174,14 +173,5 @@ describe("reset", () => {
 
   it("is a no-op before anything has been loaded", () => {
     expect(reset(initialState())).toEqual(initialState());
-  });
-});
-
-describe("isAtFrontier", () => {
-  it("is true at the latest step and false after stepping back", () => {
-    const loaded = load(initialState(), FACTORIAL);
-    const stepped = stepForward(loaded);
-    expect(isAtFrontier(stepped)).toBe(true);
-    expect(isAtFrontier(stepBack(stepped))).toBe(false);
   });
 });

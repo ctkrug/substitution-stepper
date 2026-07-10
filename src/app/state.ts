@@ -111,10 +111,6 @@ export function isAtValue(state: AppState): boolean {
   return node !== null && isValue(node);
 }
 
-export function isAtFrontier(state: AppState): boolean {
-  return state.index === state.history.length - 1;
-}
-
 function describeError(err: unknown): string {
   if (err instanceof LexError) return `syntax error: ${err.message}`;
   if (err instanceof ParseError) return `syntax error: ${err.message}`;
