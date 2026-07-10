@@ -203,6 +203,7 @@ export class SubstitutionApp {
       if (!item) return;
       this.stopPlay();
       this.state = jumpTo(this.state, Number(item.dataset.index));
+      this.wasAtValue = isAtValue(this.state);
       this.render();
     });
 
