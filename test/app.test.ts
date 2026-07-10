@@ -171,6 +171,28 @@ describe("SubstitutionApp", () => {
     expect(root.querySelectorAll(".chalk-dust").length).toBe(36);
   });
 
+  it("skips chalk-dust particles but still marks the win state when prefers-reduced-motion is set", () => {
+    const originalMatchMedia = window.matchMedia;
+    (window as unknown as { matchMedia: typeof window.matchMedia }).matchMedia =
+      ((query: string) => ({ matches: true, media: query })) as unknown as typeof window.matchMedia;
+    try {
+      const root = mount();
+      const sourceInput = q<HTMLTextAreaElement>(root, "#source-input");
+      sourceInput.value = "(define (id x) x) (id 5)";
+      q<HTMLButtonElement>(root, "button.load-btn").click();
+      q<HTMLButtonElement>(root, 'button[aria-label="Step forward"]').click();
+
+      expect(q(root, "#board").textContent).toBe("5");
+      expect(q(root, "#board").classList.contains("board--celebrate")).toBe(
+        true,
+      );
+      expect(root.querySelectorAll(".chalk-dust")).toHaveLength(0);
+    } finally {
+      (window as unknown as { matchMedia: typeof window.matchMedia }).matchMedia =
+        originalMatchMedia;
+    }
+  });
+
   it("clicking an example chip loads that example immediately", () => {
     const root = mount();
     const fibChip = Array.from(
