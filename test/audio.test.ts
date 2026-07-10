@@ -121,6 +121,22 @@ describe("Sfx", () => {
     expect(new Sfx().isMuted()).toBe(false);
   });
 
+  it("survives a localStorage that throws on write, without persisting", () => {
+    const throwing = {
+      getItem: () => {
+        throw new Error("SecurityError: storage blocked");
+      },
+      setItem: () => {
+        throw new Error("SecurityError: storage blocked");
+      },
+    };
+    (globalThis as unknown as { localStorage: unknown }).localStorage =
+      throwing;
+    const sfx = new Sfx();
+    expect(() => sfx.toggleMuted()).not.toThrow();
+    expect(sfx.isMuted()).toBe(true);
+  });
+
   it("plays a real oscillator tone through a WebAudio context", () => {
     withFakeAudioContext((ctx) => {
       new Sfx().step();
