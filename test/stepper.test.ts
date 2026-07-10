@@ -240,3 +240,40 @@ describe("step: a bare symbol reduces by an environment lookup", () => {
     expect(result!.path).toEqual([]);
   });
 });
+
+describe("step: unbounded recursion is caught before it grows without limit", () => {
+  it("throws a clear error once the substituted expression grows too large", () => {
+    // No base case ever reduces to a value: each application doubles the
+    // pending work, so the tree size explodes fast — this must be caught
+    // long before it would exhaust memory or hang the tab.
+    const { env, initial } = loadProgram(
+      "(define (bad n) (+ (bad n) (bad n))) (bad 1)",
+    );
+    let expr = initial;
+    let error: unknown = null;
+    for (let i = 0; i < 2000 && !error; i++) {
+      try {
+        const result = step(expr, env);
+        if (!result) break;
+        expr = result.expr;
+      } catch (err) {
+        error = err;
+      }
+    }
+    expect(error).toBeInstanceOf(RuntimeError);
+    expect((error as RuntimeError).message).toMatch(/too large|unbounded recursion/);
+  });
+
+  it("does not interfere with a legitimately larger example (ackermann(3,3))", () => {
+    const { env, initial } = loadProgram(
+      "(define (ackermann m n) (cond ((= m 0) (+ n 1)) ((= n 0) (ackermann (- m 1) 1)) (else (ackermann (- m 1) (ackermann m (- n 1)))))) (ackermann 3 3)",
+    );
+    let expr = initial;
+    for (let i = 0; i < 15_000; i++) {
+      const result = step(expr, env);
+      if (!result) break;
+      expr = result.expr;
+    }
+    expect(print(expr)).toBe("61");
+  });
+});
