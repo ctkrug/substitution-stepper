@@ -118,6 +118,28 @@ describe("step: application", () => {
     expect(() => step(parseOne("(mystery 1)"), env)).toThrow(RuntimeError);
   });
 
+  it("calls a procedure aliased with a bare define, one step at a time", () => {
+    // (define f g) stores the raw symbol g as f's value (defines are never
+    // eagerly evaluated here — see loader.ts) — operator resolution must
+    // keep stepping through that alias instead of demanding f resolve to a
+    // lambda in a single lookup.
+    const { env, initial } = loadProgram(
+      "(define (g x) (* x 2)) (define f g) (f 3)",
+    );
+    const first = step(initial, env);
+    expect(print(first!.expr)).toBe("(g 3)");
+    const second = step(first!.expr, env);
+    expect(print(second!.expr)).toBe("(* 3 2)");
+  });
+
+  it("calls a primitive aliased with a bare define", () => {
+    const { env, initial } = loadProgram("(define f +) (f 1 2)");
+    const first = step(initial, env);
+    expect(print(first!.expr)).toBe("(+ 1 2)");
+    const second = step(first!.expr, env);
+    expect(print(second!.expr)).toBe("3");
+  });
+
   it("throws applying a non-procedure value", () => {
     const env = new Env();
     env.define("x", parseOne("5"));
