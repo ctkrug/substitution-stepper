@@ -179,6 +179,28 @@ describe("SubstitutionApp — state machine & rapid input", () => {
     expect(q(root, "#board").textContent).toBe("(factorial 5)");
   });
 
+  it("re-loading mid-autoplay stops the old interval instead of leaking it", () => {
+    vi.useFakeTimers();
+    const root = mount();
+    q<HTMLButtonElement>(root, "button.load-btn").click();
+    const playBtn = Array.from(
+      root.querySelectorAll<HTMLButtonElement>(".controls-block .btn"),
+    ).find((b) => b.textContent === "Play")!;
+    playBtn.click();
+    expect(playBtn.textContent).toBe("Pause");
+
+    const fibChip = Array.from(
+      root.querySelectorAll<HTMLButtonElement>(".examples-row .btn"),
+    ).find((b) => b.textContent === "Fibonacci")!;
+    fibChip.click();
+
+    expect(playBtn.textContent).toBe("Play");
+    const boardAfterLoad = q(root, "#board").textContent;
+    vi.advanceTimersByTime(700 * 5);
+    // A leaked interval from the pre-reload board would have kept stepping it.
+    expect(q(root, "#board").textContent).toBe(boardAfterLoad);
+  });
+
   it("drives stepping from the keyboard and ignores keys typed in the editor", () => {
     const root = mount();
     q<HTMLButtonElement>(root, "button.load-btn").click();
