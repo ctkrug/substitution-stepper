@@ -114,6 +114,9 @@ body {
 @media (max-width: 480px) {
   .app-header {
     padding: var(--space-2) var(--space-3);
+    /* Below ~340px even the shrunk wordmark + mute button no longer both
+       fit on one line — wrap instead of forcing a horizontal scrollbar. */
+    flex-wrap: wrap;
   }
   .wordmark {
     font-size: 18px;
