@@ -381,4 +381,29 @@ describe("SubstitutionApp — state machine & rapid input", () => {
     expect(q(root, ".board-error").hasAttribute("hidden")).toBe(false);
     expect(q(root, "#board").textContent).toBe(boardBefore);
   });
+
+  it("never leaves more than one autoplay interval running across many play/reload cycles", () => {
+    vi.useFakeTimers();
+    const setIntervalSpy = vi.spyOn(window, "setInterval");
+    const clearIntervalSpy = vi.spyOn(window, "clearInterval");
+    const root = mount();
+    const chips = () =>
+      Array.from(root.querySelectorAll<HTMLButtonElement>(".btn--chip"));
+    const playBtn = () =>
+      Array.from(
+        root.querySelectorAll<HTMLButtonElement>(".controls-block .btn"),
+      ).find((b) => b.textContent === "Play" || b.textContent === "Pause")!;
+
+    for (let round = 0; round < 10; round++) {
+      chips()[round % chips().length].click();
+      playBtn().click();
+      vi.advanceTimersByTime(700 * 60); // run to completion or give up trying
+    }
+    // Stop whatever the final round left running so the tally below is fair.
+    if (playBtn().textContent === "Pause") playBtn().click();
+
+    const started = setIntervalSpy.mock.calls.length;
+    const cleared = clearIntervalSpy.mock.calls.length;
+    expect(cleared).toBe(started);
+  });
 });
