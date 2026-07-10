@@ -169,6 +169,16 @@ describe("the wow moment: recursive factorial to completion", () => {
   });
 });
 
+describe("adversarial input: unicode and emoji identifiers", () => {
+  it("defines and calls a procedure named with accented and emoji characters", () => {
+    const { env, initial } = loadProgram(
+      "(define (café-😀 x) (* x 2)) (café-😀 21)",
+    );
+    const history = runToCompletion(print(initial), env);
+    expect(print(history[history.length - 1])).toBe("42");
+  });
+});
+
 describe("environment model exercised through the stepper", () => {
   it("recursive calls resolve the procedure from the global environment each time", () => {
     const { env, initial } = loadProgram(`

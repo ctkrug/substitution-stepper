@@ -82,4 +82,16 @@ describe("tokenize", () => {
     expect(tokenize("+")[0].type).toBe("SYMBOL");
     expect(tokenize("-")[0].type).toBe("SYMBOL");
   });
+
+  it("accepts unicode and emoji characters in a symbol name", () => {
+    const tokens = tokenize("(café-fn 😀)");
+    expect(tokens.map((t) => t.type)).toEqual([
+      "LPAREN",
+      "SYMBOL",
+      "SYMBOL",
+      "RPAREN",
+    ]);
+    expect(tokens[1].text).toBe("café-fn");
+    expect(tokens[2].text).toBe("😀");
+  });
 });
