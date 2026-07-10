@@ -55,6 +55,10 @@ export function isValue(node: SchemeNode): boolean {
  * one legible rewrite at a time.
  */
 export function step(expr: SchemeNode, env: Env): StepResult | null {
+  // Check isValue() first: the cap guards against runaway *reduction*, not
+  // against legitimately large static data (e.g. a big quoted literal),
+  // which must still return null like any other already-reduced value.
+  if (isValue(expr)) return null;
   if (countNodes(expr) > MAX_NODE_COUNT) {
     throw new RuntimeError(
       "expression grew too large to continue — this usually means unbounded " +
