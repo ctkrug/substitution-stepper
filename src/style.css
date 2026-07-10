@@ -134,7 +134,10 @@ body {
   grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
   gap: var(--space-4);
   padding: 0 var(--space-4) var(--space-4);
-  align-items: start;
+  /* Stretch (not start) so the board-pane's flex:1 board grows to match the
+     taller control-pane column instead of leaving a dead strip of bare
+     background below a short board on wide/short viewports. */
+  align-items: stretch;
 }
 
 @media (max-width: 900px) {
