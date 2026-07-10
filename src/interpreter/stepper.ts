@@ -184,7 +184,13 @@ function reduceApplication(
     }
   }
 
-  if (operator.kind === "symbol" && operator.name in PRIMITIVES) {
+  // A user `define` takes precedence over a same-named primitive — matching
+  // ordinary Scheme scoping — so it must be checked before PRIMITIVES.
+  if (
+    operator.kind === "symbol" &&
+    !env.has(operator.name) &&
+    operator.name in PRIMITIVES
+  ) {
     return { expr: PRIMITIVES[operator.name](operands), path };
   }
 
