@@ -281,6 +281,28 @@ describe("step: unbounded recursion is caught before it grows without limit", ()
     expect((error as RuntimeError).message).toMatch(/too large|unbounded recursion/);
   });
 
+  it("also catches a realistic user mistake: a negative input that just never hits n = 0", () => {
+    // Unlike the doubling example above, this doesn't explode — n counts
+    // down forever (-1, -2, -3, ...) instead of ever equaling 0. Same cap,
+    // same friendly message, different (much more common) shape of bug.
+    const { env, initial } = loadProgram(
+      "(define (factorial n) (if (= n 0) 1 (* n (factorial (- n 1))))) (factorial -1)",
+    );
+    let expr = initial;
+    let error: unknown = null;
+    for (let i = 0; i < 3000 && !error; i++) {
+      try {
+        const result = step(expr, env);
+        if (!result) break;
+        expr = result.expr;
+      } catch (err) {
+        error = err;
+      }
+    }
+    expect(error).toBeInstanceOf(RuntimeError);
+    expect((error as RuntimeError).message).toMatch(/too large|unbounded recursion/);
+  });
+
   it("does not interfere with a legitimately larger example (ackermann(3,3))", () => {
     const { env, initial } = loadProgram(
       "(define (ackermann m n) (cond ((= m 0) (+ n 1)) ((= n 0) (ackermann (- m 1) 1)) (else (ackermann (- m 1) (ackermann m (- n 1)))))) (ackermann 3 3)",
