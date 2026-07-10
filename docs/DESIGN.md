@@ -2,7 +2,7 @@
 
 ## 1. Aesthetic direction
 
-**Chalkboard lecture hall.** Substitution Stepper looks like a well-worn
+**Chalkboard lecture hall.** Chalkstep looks like a well-worn
 university chalkboard mid-lecture: deep chalkboard green-black, warm chalk-white
 prose, and a chalk-yellow accent used exactly the way a lecturer's hand
 circles the term they're about to rewrite. The whole premise of this project
@@ -58,7 +58,7 @@ in. This is the literal visual of a lecturer circling a term and rewriting it.
 
 ## 5. Juice plan (interaction feedback)
 
-Substitution Stepper is a teaching toy, not a game, but stepping should still
+Chalkstep is a teaching toy, not a game, but stepping should still
 feel tactile:
 
 - **Step forward/back**: 90ms chalk-circle draw-on around the reducing
