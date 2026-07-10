@@ -290,6 +290,16 @@ describe("step: malformed special forms surface a clear RuntimeError", () => {
     );
   });
 
+  it("also rejects a duplicate parameter typo'd in a (define (f ...) ...) header", () => {
+    // The far more common real path to the same bug: applyDefine folds a
+    // procedure header straight into a lambda without validating it, so the
+    // duplicate is only ever caught here, at first call.
+    const { env: defEnv, initial } = loadProgram(
+      "(define (f x x) (+ x x)) (f 1 2)",
+    );
+    expect(() => step(initial, defEnv)).toThrow(/duplicate parameter/);
+  });
+
   it("rejects a cond whose reached test is a non-boolean value", () => {
     expect(() => step(parseOne("(cond (5 1))"), env)).toThrow(
       /test must be a boolean/,
