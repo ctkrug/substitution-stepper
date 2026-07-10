@@ -85,6 +85,16 @@ test/                   # one file per module above, plus app.test.ts (jsdom DOM
   once, at the point of application, against `Env` first and `PRIMITIVES`
   second, so a user `define` of the same name (e.g. redefining `+`) takes
   precedence over the built-in the way ordinary Scheme scoping would.
+  Because `define` stores its value unevaluated (see `loader.ts`), that env
+  lookup doesn't always land on a lambda right away — `(define f g)` binds
+  `f` to the symbol `g` itself, and `(define add5 (make-adder 5))` binds
+  `add5` to a whole unreduced application. `reduceApplication` handles both
+  the same way: whenever the looked-up value isn't yet a value
+  (`!isValue(proc)`), it rewrites the operator to that value and lets the
+  next step reduce it further — the same one-step-at-a-time treatment given
+  to any other not-yet-reduced sub-expression. This is what makes the SICP
+  closure pattern (a helper that returns a procedure, bound with a plain
+  `define`) actually callable.
 - **Why highlight paths are cached per history entry** (`AppState.highlights`,
   parallel to `history`) rather than a single "last highlight" field:
   stepping back and then forward again needs to replay the _same_ rewrite
