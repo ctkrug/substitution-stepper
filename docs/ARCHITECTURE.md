@@ -88,9 +88,27 @@ test/                   # one file per module above, plus app.test.ts (jsdom DOM
   parallel to `history`) rather than a single "last highlight" field:
   stepping back and then forward again needs to replay the _same_ rewrite
   highlight, not lose it.
+- **Why `step()` rejects an expression once it exceeds ~2000 nodes:** a
+  recursive definition with no reachable base case (a missing or wrong
+  terminating condition — an easy real mistake) never returns `null`; the
+  substituted tree just grows every step, each step slower than the last,
+  with no way to recover short of closing the tab. The cap sits far above
+  any built-in example's peak (ackermann(3,3) tops out under 250 nodes) but
+  well below where per-step cost turns pathological, so it fails fast with a
+  clear message instead of hanging.
 - **Static, subpath-safe build:** `vite.config.ts` sets `base: "./"`; every
   asset reference in `index.html`/`style.css` is relative. Verified by
   building and serving `dist/` from a nested directory (see BACKLOG 4.1).
+- **Why the board's markup renders into `.board-content`, not `#board`
+  itself:** `#board` is `display: flex` (to center its content). A flex
+  container drops whitespace-only text nodes between its children entirely —
+  since `board.ts` joins sibling token `<span>`s with plain space characters,
+  rendering straight into a flex container glued every token together with
+  no visible gap (e.g. `(factorial5)`). jsdom has no CSS layout engine, so
+  the DOM test suite never caught this; only screenshotting the real built
+  app surfaced it. The tokens now render into a plain, non-flex
+  `.board-content` block one level down; `#board` keeps `display: flex`
+  only to center that single wrapper.
 
 ## Running things
 
