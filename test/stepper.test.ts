@@ -106,6 +106,13 @@ describe("step: application", () => {
     expect(print(result!.expr)).toBe("(* 5 5)");
   });
 
+  it("prefers a user define over a same-named primitive", () => {
+    const env = new Env();
+    env.define("+", parseOne("(lambda (a b) (- a b))"));
+    const result = step(parseOne("(+ 5 2)"), env);
+    expect(print(result!.expr)).toBe("(- 5 2)");
+  });
+
   it("throws calling an undefined procedure", () => {
     const env = new Env();
     expect(() => step(parseOne("(mystery 1)"), env)).toThrow(RuntimeError);
