@@ -76,6 +76,21 @@ describe("SubstitutionApp", () => {
     );
   });
 
+  it("surfaces a runtime error triggered by Step, not just by Load", () => {
+    const root = mount();
+    const textarea = q<HTMLTextAreaElement>(root, "#source-input");
+    textarea.value = "(mystery 1)";
+    q<HTMLButtonElement>(root, "button.load-btn").click();
+    expect(q(root, ".board-error").hasAttribute("hidden")).toBe(true);
+
+    q<HTMLButtonElement>(root, 'button[aria-label="Step forward"]').click();
+
+    expect(q(root, ".board-error").hasAttribute("hidden")).toBe(false);
+    expect(q(root, ".board-error").textContent).toMatch(
+      /unbound variable: mystery/,
+    );
+  });
+
   it("stepping again after reaching the value is inert, not an error", () => {
     const root = mount();
     q<HTMLButtonElement>(root, "button.load-btn").click();
