@@ -251,6 +251,15 @@ describe("step: malformed special forms surface a clear RuntimeError", () => {
     );
   });
 
+  it("rejects a lambda with a duplicate parameter name instead of silently dropping an argument", () => {
+    // bindings was built with `new Map(params.map(...))`, which keeps only
+    // the *last* entry for a repeated key — without this check, applying
+    // (lambda (x x) (+ x x)) to (1 2) would silently discard the 1.
+    expect(() => step(parseOne("((lambda (x x) (+ x x)) 1 2)"), env)).toThrow(
+      /duplicate parameter/,
+    );
+  });
+
   it("rejects a cond whose reached test is a non-boolean value", () => {
     expect(() => step(parseOne("(cond (5 1))"), env)).toThrow(
       /test must be a boolean/,
