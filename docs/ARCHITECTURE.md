@@ -82,8 +82,9 @@ test/                   # one file per module above, plus app.test.ts (jsdom DOM
   `+` or `factorial` isn't itself "a value" (see `isValue`), but it must not be
   treated as a free-standing reducible expression either — otherwise a
   primitive name would look like an unbound variable lookup. It's resolved
-  once, at the point of application, against `PRIMITIVES` first and `Env`
-  second.
+  once, at the point of application, against `Env` first and `PRIMITIVES`
+  second, so a user `define` of the same name (e.g. redefining `+`) takes
+  precedence over the built-in the way ordinary Scheme scoping would.
 - **Why highlight paths are cached per history entry** (`AppState.highlights`,
   parallel to `history`) rather than a single "last highlight" field:
   stepping back and then forward again needs to replay the _same_ rewrite
@@ -95,7 +96,10 @@ test/                   # one file per module above, plus app.test.ts (jsdom DOM
   with no way to recover short of closing the tab. The cap sits far above
   any built-in example's peak (ackermann(3,3) tops out under 250 nodes) but
   well below where per-step cost turns pathological, so it fails fast with a
-  clear message instead of hanging.
+  clear message instead of hanging. The `isValue()` check runs *before* the
+  cap, so a large-but-already-reduced expression (e.g. a big quoted literal)
+  still returns `null` like any other value instead of tripping it — the cap
+  only ever fires on an expression `step()` is about to actually reduce.
 - **Static, subpath-safe build:** `vite.config.ts` sets `base: "./"`; every
   asset reference in `index.html`/`style.css` is relative. Verified by
   building and serving `dist/` from a nested directory (see BACKLOG 4.1).
@@ -109,6 +113,14 @@ test/                   # one file per module above, plus app.test.ts (jsdom DOM
   app surfaced it. The tokens now render into a plain, non-flex
   `.board-content` block one level down; `#board` keeps `display: flex`
   only to center that single wrapper.
+- **Why `.layout` uses `align-items: stretch`, not `start`:** the two-column
+  grid's right column (source editor + controls + history) is naturally
+  taller than the board's `min-height: 60vh` on short/wide viewports. With
+  `start`, the board-pane stopped at its min-height and left a bare strip of
+  chalkboard background below it instead of filling the row — `stretch` lets
+  the board-pane's `flex: 1` board grow to match the taller column instead
+  (measured: 577px → 776px at 1440×900). Below the 900px breakpoint the grid
+  collapses to one column, where this has no effect.
 
 ## Running things
 
