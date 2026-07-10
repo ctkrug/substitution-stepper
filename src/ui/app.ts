@@ -47,6 +47,7 @@ export class SubstitutionApp {
   private readonly root: HTMLElement;
   private readonly sourceInput: HTMLTextAreaElement;
   private readonly board: HTMLDivElement;
+  private readonly boardContent: HTMLDivElement;
   private readonly boardStatus: HTMLDivElement;
   private readonly boardError: HTMLDivElement;
   private readonly historyList: HTMLOListElement;
@@ -65,6 +66,7 @@ export class SubstitutionApp {
     const shell = this.buildShell();
     this.sourceInput = shell.sourceInput;
     this.board = shell.board;
+    this.boardContent = shell.boardContent;
     this.boardStatus = shell.boardStatus;
     this.boardError = shell.boardError;
     this.historyList = shell.historyList;
@@ -99,6 +101,8 @@ export class SubstitutionApp {
     const board = el("div", "board");
     board.id = "board";
     board.setAttribute("aria-live", "polite");
+    const boardContent = el("div", "board-content");
+    board.appendChild(boardContent);
     const boardStatus = el("div", "board-status");
     boardStatus.setAttribute("role", "status");
     boardStatus.setAttribute("aria-live", "polite");
@@ -156,6 +160,7 @@ export class SubstitutionApp {
       root,
       sourceInput,
       board,
+      boardContent,
       boardStatus,
       boardError,
       historyList,
@@ -303,9 +308,12 @@ export class SubstitutionApp {
     const loaded = node !== null;
 
     if (node) {
-      this.board.innerHTML = renderBoardHtml(node, highlightPath(this.state));
+      this.boardContent.innerHTML = renderBoardHtml(
+        node,
+        highlightPath(this.state),
+      );
     } else {
-      this.board.innerHTML =
+      this.boardContent.innerHTML =
         '<p class="board-empty">Nothing on the board yet. Paste a definition and a call, or pick an example, then hit <strong>Load</strong>.</p>';
     }
 

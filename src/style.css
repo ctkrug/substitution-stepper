@@ -161,7 +161,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
   padding: var(--space-6) var(--space-4);
   border-radius: var(--radius);
   background:
@@ -171,11 +170,23 @@ body {
     0 1px 2px rgba(0, 0, 0, 0.4),
     0 8px 24px rgba(0, 0, 0, 0.35),
     inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+  position: relative;
+}
+
+/*
+ * The rendered expression's token <span>s are joined by plain space
+ * characters (see board.ts). A flex container drops whitespace-only text
+ * nodes between its children entirely, gluing every token together with no
+ * visible gap — so the tokens render inside this plain block instead, with
+ * `.board` itself doing the flex centering around it.
+ */
+.board-content {
+  max-width: 100%;
+  text-align: center;
   font-family: var(--font-ui);
   font-size: clamp(20px, 3.4vw, 34px);
   line-height: 1.6;
   overflow-wrap: break-word;
-  position: relative;
 }
 
 .board-empty {
