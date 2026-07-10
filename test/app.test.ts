@@ -318,6 +318,34 @@ describe("SubstitutionApp — state machine & rapid input", () => {
     expect(q(root, "#board").textContent).toBe("(factorial 5)");
   });
 
+  it("also accepts Space to step forward and Backspace to step back", () => {
+    const root = mount();
+    q<HTMLButtonElement>(root, "button.load-btn").click();
+
+    document.dispatchEvent(
+      new KeyboardEvent("keydown", { key: " ", bubbles: true }),
+    );
+    expect(root.querySelectorAll(".history-item")).toHaveLength(2);
+
+    document.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "Backspace", bubbles: true }),
+    );
+    expect(q(root, "#board").textContent).toBe("(factorial 5)");
+  });
+
+  it("ignores a click inside the history list that doesn't land on an entry", () => {
+    const root = mount();
+    q<HTMLButtonElement>(root, "button.load-btn").click();
+    q<HTMLButtonElement>(root, 'button[aria-label="Step forward"]').click();
+    const before = q(root, "#board").textContent;
+
+    q(root, ".history-list").dispatchEvent(
+      new MouseEvent("click", { bubbles: true }),
+    );
+
+    expect(q(root, "#board").textContent).toBe(before);
+  });
+
   it("gives every control an accessible name and exposes the live/alert regions", () => {
     const root = mount();
     q<HTMLButtonElement>(root, "button.load-btn").click();
