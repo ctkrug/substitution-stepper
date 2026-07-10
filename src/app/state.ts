@@ -119,5 +119,8 @@ function describeError(err: unknown): string {
   if (err instanceof LexError) return `syntax error: ${err.message}`;
   if (err instanceof ParseError) return `syntax error: ${err.message}`;
   if (err instanceof RuntimeError) return err.message;
+  if (err instanceof RangeError) {
+    return "expression is too deeply nested or recursive to evaluate";
+  }
   return err instanceof Error ? err.message : String(err);
 }
