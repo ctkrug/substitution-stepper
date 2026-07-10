@@ -230,6 +230,26 @@ describe("SubstitutionApp — state machine & rapid input", () => {
     expect(q(root, "#board").textContent).toBe(boardAfterLoad);
   });
 
+  it("clicking a history entry mid-autoplay stops the running interval", () => {
+    vi.useFakeTimers();
+    const root = mount();
+    q<HTMLButtonElement>(root, "button.load-btn").click();
+    const playBtn = Array.from(
+      root.querySelectorAll<HTMLButtonElement>(".controls-block .btn"),
+    ).find((b) => b.textContent === "Play")!;
+    playBtn.click();
+    vi.advanceTimersByTime(700 * 2); // let it advance a couple of steps
+    expect(playBtn.textContent).toBe("Pause");
+
+    q<HTMLButtonElement>(root, '.history-item[data-index="0"] button').click();
+
+    expect(playBtn.textContent).toBe("Play");
+    expect(q(root, "#board").textContent).toBe("(factorial 5)");
+    vi.advanceTimersByTime(700 * 5);
+    // A leaked interval would have kept stepping past the jumped-to entry.
+    expect(q(root, "#board").textContent).toBe("(factorial 5)");
+  });
+
   it("drives stepping from the keyboard and ignores keys typed in the editor", () => {
     const root = mount();
     q<HTMLButtonElement>(root, "button.load-btn").click();
