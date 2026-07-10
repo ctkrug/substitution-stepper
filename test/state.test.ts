@@ -49,6 +49,11 @@ describe("load", () => {
     expect(state.error).not.toMatch(/call stack/i);
     expect(state.error).toMatch(/too deep/i);
   });
+
+  it("reports a lex-time error (unterminated string) as a syntax error", () => {
+    const state = load(initialState(), '"unterminated');
+    expect(state.error).toMatch(/syntax error: unterminated string literal/);
+  });
 });
 
 describe("stepForward", () => {
@@ -165,6 +170,10 @@ describe("reset", () => {
     expect(wasReset.history).toHaveLength(1);
     expect(wasReset.index).toBe(0);
     expect(print(current(wasReset)!)).toBe("(factorial 3)");
+  });
+
+  it("is a no-op before anything has been loaded", () => {
+    expect(reset(initialState())).toEqual(initialState());
   });
 });
 
