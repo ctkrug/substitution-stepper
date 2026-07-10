@@ -147,6 +147,30 @@ describe("SubstitutionApp", () => {
     expect(q(root, "#board").textContent).toBe("(factorial 5)");
   });
 
+  it("replays the win celebration after jumping to history and re-arriving at the value", () => {
+    const root = mount();
+    const sourceInput = q<HTMLTextAreaElement>(root, "#source-input");
+    sourceInput.value = "(define (id x) x) (id 5)";
+    q<HTMLButtonElement>(root, "button.load-btn").click();
+    const stepBtn = q<HTMLButtonElement>(
+      root,
+      'button[aria-label="Step forward"]',
+    );
+    stepBtn.click();
+    expect(root.querySelectorAll(".chalk-dust").length).toBe(18);
+
+    // Jump back to the initial (non-value) entry via the history list, not
+    // "Step back" — this is the path that used to leave `wasAtValue` stale.
+    q<HTMLButtonElement>(
+      root,
+      '.history-item[data-index="0"] button',
+    ).click();
+    stepBtn.click();
+
+    expect(q(root, "#board").textContent).toBe("5");
+    expect(root.querySelectorAll(".chalk-dust").length).toBe(36);
+  });
+
   it("clicking an example chip loads that example immediately", () => {
     const root = mount();
     const fibChip = Array.from(
