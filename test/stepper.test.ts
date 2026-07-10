@@ -140,6 +140,14 @@ describe("step: application", () => {
     expect(print(second!.expr)).toBe("3");
   });
 
+  it("resolves a multi-hop alias chain, one hop per step", () => {
+    const { env, initial } = loadProgram(
+      "(define (double x) (* x 2)) (define a double) (define b a) (b 5)",
+    );
+    const steps = runToCompletion(print(initial), env).map(print);
+    expect(steps).toEqual(["(b 5)", "(a 5)", "(double 5)", "(* 5 2)", "10"]);
+  });
+
   it("throws applying a non-procedure value", () => {
     const env = new Env();
     env.define("x", parseOne("5"));
