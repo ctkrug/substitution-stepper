@@ -136,6 +136,16 @@ describe("step returns null once the expression is fully reduced", () => {
     const env = new Env();
     expect(step(parseOne("42"), env)).toBeNull();
   });
+
+  it("is a no-op on an already-reduced value even past the node-count cap", () => {
+    // The cap exists to catch runaway *reduction* (a missing base case), not
+    // to reject legitimately large static data. A big quoted literal is
+    // already a value — quote(d) data is never evaluated — so it must
+    // return null like any other value, not throw the recursion error.
+    const bigList = Array(2500).fill("1").join(" ");
+    const env = new Env();
+    expect(step(parseOne(`'(${bigList})`), env)).toBeNull();
+  });
 });
 
 describe("the wow moment: recursive factorial to completion", () => {
