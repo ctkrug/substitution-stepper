@@ -200,6 +200,16 @@ function reduceApplication(
 
   const proc =
     operator.kind === "symbol" ? env.lookup(operator.name) : operator;
+
+  // A bare `define` stores its value unevaluated (see loader.ts), so
+  // aliasing a procedure — (define f g) — binds f to the symbol g itself,
+  // not to whatever g names. Rewrite the operator to what it resolved to and
+  // let the next step resolve that in turn, exactly like any other
+  // not-yet-a-value sub-expression, instead of demanding a lambda in one hop.
+  if (proc.kind === "symbol") {
+    return { expr: list([proc, ...operands]), path };
+  }
+
   if (!(
     proc.kind === "list" &&
     proc.items[0]?.kind === "symbol" &&
