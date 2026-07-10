@@ -61,6 +61,24 @@ describe("SubstitutionApp", () => {
     );
   });
 
+  it("steps a pasted procedure alias through to its value on the real board", () => {
+    const root = mount();
+    const sourceInput = q<HTMLTextAreaElement>(root, "#source-input");
+    sourceInput.value = "(define (double x) (* x 2)) (define f double) (f 5)";
+    q<HTMLButtonElement>(root, "button.load-btn").click();
+    const stepBtn = q<HTMLButtonElement>(
+      root,
+      'button[aria-label="Step forward"]',
+    );
+    const seen: string[] = [];
+    for (let i = 0; i < 10 && !stepBtn.disabled; i++) {
+      seen.push(q(root, "#board").textContent!);
+      stepBtn.click();
+    }
+    seen.push(q(root, "#board").textContent!);
+    expect(seen).toEqual(["(f 5)", "(double 5)", "(* 5 2)", "10"]);
+  });
+
   it("disables Step once the board reaches its final value", () => {
     const root = mount();
     q<HTMLButtonElement>(root, "button.load-btn").click();
