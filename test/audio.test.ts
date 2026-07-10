@@ -150,4 +150,18 @@ describe("Sfx", () => {
       expect(ctx.createOscillator).not.toHaveBeenCalled();
     });
   });
+
+  it("win plays two chimes: one immediately, one after a short delay", () => {
+    vi.useFakeTimers();
+    withFakeAudioContext((ctx) => {
+      new Sfx().win();
+      expect(ctx.createOscillator).toHaveBeenCalledTimes(1);
+      vi.advanceTimersByTime(90);
+      expect(ctx.createOscillator).toHaveBeenCalledTimes(2);
+      expect(ctx.oscillators[0].frequency.value).not.toBe(
+        ctx.oscillators[1].frequency.value,
+      );
+    });
+    vi.useRealTimers();
+  });
 });
