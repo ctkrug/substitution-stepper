@@ -209,6 +209,21 @@ describe("the wow moment: recursive factorial to completion", () => {
   });
 });
 
+describe("step: calling a closure bound via a value define", () => {
+  it("resolves (define add5 (make-adder 5)) before calling it — the SICP closure pattern", () => {
+    // (define add5 (make-adder 5)) stores the raw, unevaluated application
+    // (make-adder 5) as add5's value (defines are never eagerly evaluated —
+    // see loader.ts). Calling (add5 10) must reduce that stored application
+    // down to a lambda before applying it, not demand it already be one.
+    const { env, initial } = loadProgram(
+      "(define (make-adder n) (lambda (x) (+ x n))) (define add5 (make-adder 5)) (add5 10)",
+    );
+    const history = runToCompletion(print(initial), env);
+    expect(print(history[0])).toBe("(add5 10)");
+    expect(print(history[history.length - 1])).toBe("15");
+  });
+});
+
 describe("adversarial input: unicode and emoji identifiers", () => {
   it("defines and calls a procedure named with accented and emoji characters", () => {
     const { env, initial } = loadProgram(
