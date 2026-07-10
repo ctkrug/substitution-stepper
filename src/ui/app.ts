@@ -88,8 +88,7 @@ export class SubstitutionApp {
 
     const header = el("header", "app-header");
     const wordmark = el("h1", "wordmark");
-    wordmark.innerHTML =
-      '<span class="wordmark__glyph">&lambda;</span>Substitution Stepper';
+    wordmark.innerHTML = '<span class="wordmark__glyph">&lambda;</span>Chalkstep';
     const muteBtn = el("button", "icon-btn mute-btn");
     muteBtn.type = "button";
     header.append(wordmark, muteBtn);
