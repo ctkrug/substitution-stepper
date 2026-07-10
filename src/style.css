@@ -111,6 +111,18 @@ body {
   text-shadow: 0 0 18px rgba(255, 207, 86, 0.45);
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.repo-link {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
 @media (max-width: 480px) {
   .app-header {
     padding: var(--space-2) var(--space-3);
@@ -563,4 +575,99 @@ body {
   .board--celebrate {
     animation: none;
   }
+}
+
+/* Below-the-fold explainer + FAQ. Shares the board's surface treatment so
+   the scroll reads as one continuous chalkboard, not a separate page. */
+.page-about {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding: var(--space-8) var(--space-4);
+}
+
+.page-about__inner {
+  max-width: 70ch;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.page-about__title {
+  font-size: clamp(24px, 4vw, 34px);
+  margin-bottom: var(--space-1);
+}
+
+.page-about__subtitle {
+  font-size: 20px;
+  margin-top: var(--space-4);
+  color: var(--accent);
+}
+
+.page-about p {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.page-about code {
+  font-family: var(--font-ui);
+  color: var(--accent);
+  background: var(--surface-1);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 0.9em;
+}
+
+.faq {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.faq dt {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.faq dd {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.page-about__cta {
+  align-self: flex-start;
+  width: auto;
+  margin-top: var(--space-3);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.page-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.page-footer__link {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 160ms ease-out;
+}
+
+.page-footer__link:hover {
+  color: var(--accent);
+}
+
+.page-footer__portfolio {
+  margin-left: auto;
 }

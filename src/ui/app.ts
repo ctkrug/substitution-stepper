@@ -88,10 +88,19 @@ export class SubstitutionApp {
 
     const header = el("header", "app-header");
     const wordmark = el("h1", "wordmark");
-    wordmark.innerHTML = '<span class="wordmark__glyph">&lambda;</span>Chalkstep';
+    wordmark.innerHTML =
+      '<span class="wordmark__glyph">&lambda;</span>Chalkstep';
     const muteBtn = el("button", "icon-btn mute-btn");
     muteBtn.type = "button";
-    header.append(wordmark, muteBtn);
+    const headerActions = el("div", "header-actions");
+    const repoLink = el("a", "icon-btn repo-link");
+    repoLink.href = "https://github.com/ctkrug/substitution-stepper";
+    repoLink.target = "_blank";
+    repoLink.rel = "noopener noreferrer";
+    repoLink.textContent = "GitHub";
+    repoLink.setAttribute("aria-label", "View Chalkstep source on GitHub");
+    headerActions.append(muteBtn, repoLink);
+    header.append(wordmark, headerActions);
 
     const layout = el("main", "layout");
 

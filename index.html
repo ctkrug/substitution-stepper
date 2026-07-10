@@ -3,7 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chalkstep — watch Scheme recursion rewrite itself, step by step</title>
+    <title>
+      Chalkstep — watch Scheme recursion rewrite itself, step by step
+    </title>
     <meta
       name="description"
       content="Chalkstep is a free SICP substitution-model visualizer: paste a Scheme expression and watch it rewrite itself one reduction at a time, the way the lectures chalk it up."
@@ -33,6 +35,98 @@
   </head>
   <body>
     <div id="app"></div>
+
+    <section class="page-about" aria-labelledby="about-heading">
+      <div class="page-about__inner">
+        <h2 id="about-heading" class="page-about__title">
+          See the substitution model, not just the answer
+        </h2>
+        <p>
+          Chalkstep is a free, browser-based visualizer for the SICP
+          substitution model of evaluation. You paste a small Scheme program, a
+          few definitions and one call, and step through it one reduction at a
+          time. Every step rewrites the expression in place and circles the
+          sub-expression that changed, so a recursive procedure like
+          <code>(factorial 5)</code> visibly unwinds down to
+          <code>120</code> the way it does on a lecture-hall board.
+        </p>
+        <p>
+          A Scheme REPL hands you the final value and hides the work. The whole
+          point of the substitution model is the work: an application rewrites
+          to the procedure body with its arguments substituted in,
+          sub-expressions reduce inside-out, and eventually you are left with a
+          value. Chalkstep captures each of those rewrites and lets you move
+          forward, step back, replay them automatically, or jump to any point in
+          the derivation.
+        </p>
+        <p>
+          It runs a hand-written Scheme interpreter for a practical teaching
+          subset: <code>define</code>, <code>lambda</code>, <code>if</code> and
+          <code>cond</code>, quoting, and the arithmetic and comparison
+          primitives. Recursion, higher-order procedures, and the SICP closure
+          pattern such as <code>(define add5 (make-adder 5))</code>
+          all reduce step by step. Parse and runtime problems, unbalanced
+          parentheses, an unbound variable, applying a non-procedure, show as a
+          plain inline message instead of a blank board.
+        </p>
+
+        <h3 class="page-about__subtitle">Questions</h3>
+        <dl class="faq">
+          <dt>What is the substitution model in SICP?</dt>
+          <dd>
+            It is the mental model SICP teaches for how a procedure application
+            evaluates: replace the call with the procedure body, substitute the
+            argument values for the parameters, then keep reducing until only a
+            value remains. Chalkstep performs exactly that rewrite and shows
+            each step.
+          </dd>
+          <dt>How is this different from a Scheme REPL?</dt>
+          <dd>
+            A REPL prints the result and nothing in between. Chalkstep prints
+            the in-between: every intermediate expression from the first call to
+            the final value, with the part that just changed highlighted.
+          </dd>
+          <dt>What Scheme syntax can I step through?</dt>
+          <dd>
+            Definitions, lambdas, <code>if</code> and <code>cond</code>, quoted
+            data, and numeric and comparison primitives. Structure your program
+            as one or more <code>define</code>s followed by a single call
+            expression to step through.
+          </dd>
+          <dt>Can I use my own code?</dt>
+          <dd>
+            Yes. The four SICP examples load with one click, but the editor
+            accepts any program in the supported subset. Paste it, press Load,
+            then Step.
+          </dd>
+          <dt>Is Chalkstep free?</dt>
+          <dd>
+            Yes, completely. It runs entirely in your browser with no account
+            and no backend, and the source is on GitHub.
+          </dd>
+        </dl>
+
+        <a class="btn btn--primary page-about__cta" href="#app">Try it above</a>
+      </div>
+    </section>
+
+    <footer class="page-footer">
+      <a
+        class="page-footer__link"
+        href="https://github.com/ctkrug/substitution-stepper"
+        target="_blank"
+        rel="noopener noreferrer"
+        >View on GitHub</a
+      >
+      <a
+        class="page-footer__link page-footer__portfolio"
+        href="https://apps.charliekrug.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        >More by Charlie Krug &rarr; apps.charliekrug.com</a
+      >
+    </footer>
+
     <script type="module" src="./src/main.ts"></script>
   </body>
 </html>
