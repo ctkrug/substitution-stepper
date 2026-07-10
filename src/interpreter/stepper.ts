@@ -12,6 +12,19 @@ export interface StepResult {
   path: number[];
 }
 
+// Generous headroom over any legitimate teaching example (the built-in
+// examples peak under 250 nodes, even ackermann(3,3)) while still catching
+// unbounded recursion — e.g. a missing base case — before the ever-larger
+// substituted tree makes each subsequent step perceptibly slower.
+const MAX_NODE_COUNT = 2000;
+
+function countNodes(node: SchemeNode): number {
+  if (node.kind !== "list") return 1;
+  let total = 1;
+  for (const item of node.items) total += countNodes(item);
+  return total;
+}
+
 /**
  * True when `node` cannot be reduced further: self-evaluating atoms, quoted
  * data, and `lambda` expressions (procedure values) are all already values.
@@ -42,6 +55,12 @@ export function isValue(node: SchemeNode): boolean {
  * one legible rewrite at a time.
  */
 export function step(expr: SchemeNode, env: Env): StepResult | null {
+  if (countNodes(expr) > MAX_NODE_COUNT) {
+    throw new RuntimeError(
+      "expression grew too large to continue — this usually means unbounded " +
+        "recursion (check for a missing or unreachable base case)",
+    );
+  }
   return stepExpr(expr, [], env);
 }
 
